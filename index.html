@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Dulces M &amp; J</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f5a9d8">
+<meta name="color-scheme" content="light">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dulces M&amp;J">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#3b2218; --ink2:#6e5148; --mute:#a08a82; --paper:#fff; --cream:#fff7fb; --pearl:#fff0f8; --line:#f7d9ea;
+  --pink:#f5a9d8; --rose:#ee7fbb; --mint:#d9fdfb; --copper:#c68545; --cherry:#a60011; --brown:#7a4a35;
+  --holo:linear-gradient(115deg,#f58cc4 0%,#f5a9d8 38%,#c9f1f5 70%,#e6b98a 100%);
+  --holo-soft:linear-gradient(115deg,#ffdcee 0%,#ffc9e5 38%,#d9f7f8 70%,#f9e7d2 100%);
+  --ok:#1c7f55; --warn:#a8480f; --bad:#c2263f;
+  --fd:'Fredoka','Nunito',system-ui,sans-serif;
+  --fs:'Pacifico','Fredoka',cursive;
+  --fb:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --tab-h:64px; --bar-h:58px; --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#fed7ec;color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.35;
+  -webkit-font-smoothing:antialiased;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{position:fixed;inset:0;overflow:hidden;user-select:none;-webkit-user-select:none}
+input,textarea,select{font:inherit;font-size:16px;color:inherit;user-select:text;-webkit-user-select:text;-webkit-appearance:none;appearance:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-appearance:none}
+button:active:not(:disabled){opacity:.7}
+svg.i{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--brown);outline-offset:2px}
+
+#app{position:relative;height:100%;max-width:520px;margin:0 auto;background:var(--cream);overflow:hidden}
+#view{position:absolute;top:calc(var(--bar-h) + var(--sat));right:0;bottom:0;left:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding-top:0;padding-bottom:calc(var(--tab-h) + var(--sab) + 28px)}
+#offline{position:absolute;top:calc(var(--bar-h) + var(--sat));left:0;right:0;z-index:6;background:var(--brown);color:#fff;font-size:13px;text-align:center;padding:6px 12px}
+
+/* Encabezado de marca */
+#brandbar{position:absolute;top:0;left:0;right:0;z-index:5;padding:var(--sat) 6px 0 14px;height:calc(var(--bar-h) + var(--sat));display:flex;align-items:center;gap:10px;
+  background:linear-gradient(110deg,#f59fd0 0%,#f5a9d8 55%,#f9c3e2 100%);border-bottom:3px solid rgba(255,255,255,.6);box-shadow:0 3px 16px rgba(190,70,130,.2)}
+#brandbar img{width:42px;height:42px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 2px 8px rgba(122,74,53,.3);flex:none}
+#brandbar .bname{flex:1;min-width:0;font-family:var(--fs);font-size:26px;line-height:1.35;color:#fff;letter-spacing:.01em;
+  text-shadow:1.5px 1.5px 0 var(--brown),0 3px 10px rgba(122,74,53,.25);white-space:nowrap;padding-top:2px}
+#brandbar .ibtn{color:var(--brown)}
+#brandbar .ibtn:active{background:rgba(255,255,255,.4)}
+
+/* Barra inferior */
+#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(var(--tab-h) + var(--sab));padding-bottom:var(--sab);
+  background:rgba(255,247,251,.95);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;z-index:5}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:var(--tab-h);font-size:11.5px;font-weight:500;color:var(--mute);position:relative}
+.tab.on{color:var(--ink)}
+.tab.on::after{content:"";position:absolute;top:0;left:50%;width:30px;height:3px;margin-left:-15px;border-radius:0 0 4px 4px;background:var(--holo)}
+.tab-plus{height:var(--tab-h);display:flex;align-items:flex-start;justify-content:center}
+.plus{width:58px;height:58px;border-radius:50%;background:var(--holo);padding:3px;margin-top:-20px}
+.plus i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--brown);color:#fff}
+.plus svg{width:26px;height:26px;stroke-width:2}
+
+/* Encabezados */
+.top{display:flex;align-items:center;gap:10px;padding:14px 12px 6px 20px;min-height:64px}
+.top h1{font-family:var(--fd);font-weight:600;font-size:30px;letter-spacing:-.01em;line-height:1;flex:1}
+.ibtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ibtn:active{background:var(--pearl)}
+h2.sec{font-family:var(--fd);font-size:21px;font-weight:600;padding:24px 20px 4px;display:flex;align-items:baseline;justify-content:space-between}
+h2.sec small{font-family:var(--fb);font-size:13.5px;font-weight:500;color:var(--mute)}
+.pad{padding:0 20px}
+.muted{color:var(--mute)} .small{font-size:13.5px}
+
+/* Inicio */
+.greet{padding:16px 20px 2px}
+.greet h1{font-family:var(--fd);font-weight:600;font-size:26px;line-height:1.1}
+.greet p{font-size:14px;color:var(--ink2);margin-top:2px}
+.hero{margin:12px 20px 0;border-radius:28px;padding:22px 22px 18px;background:var(--holo-soft);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.75) 50%,transparent 68%);
+  transform:translateX(-110%);animation:sweep 1.5s .45s ease-out 1 forwards;pointer-events:none}
+@keyframes sweep{to{transform:translateX(110%)}}
+.hero .lab{font-size:14.5px;color:var(--ink2)}
+.hero .big{font-family:var(--fd);font-weight:600;font-size:50px;line-height:1;margin:6px 0 6px;letter-spacing:-.02em}
+.hero .sub{font-size:15px;color:var(--ink2)}
+.ratebtn{margin-top:14px;display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.7);font-size:13.5px;font-weight:500;position:relative;z-index:1}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px 0}
+
+/* Listas */
+.list{padding:0 20px}
+.row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.row:last-child{border-bottom:0}
+.row .main{flex:1;min-width:0;display:block}
+.row>svg{color:var(--mute);width:18px;height:18px}
+.row .t{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .s{display:block;font-size:13.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.row .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.row .v small{display:block;font-weight:400;font-size:12.5px;color:var(--mute)}
+.row .v.warn{color:var(--warn)} .row .v.in{color:var(--ok)} .row .v.out{color:var(--bad)}
+.av{width:46px;height:46px;border-radius:50%;background:var(--holo);padding:2px;flex:none}
+.av b{width:100%;height:100%;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:var(--fd);font-weight:600;font-size:18px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:600;background:var(--holo-soft)}
+.pill.warn{background:#fff0d6;color:var(--warn)}
+.pill.ok{background:#dff5ea;color:var(--ok)}
+.empty{padding:34px 28px;text-align:center;color:var(--ink2)}
+.empty img{width:92px;height:92px;border-radius:50%;margin-bottom:12px;box-shadow:0 2px 16px rgba(200,70,140,.25)}
+.empty h3{font-family:var(--fd);font-size:22px;font-weight:600;margin-bottom:6px;color:var(--ink)}
+.empty p{margin-bottom:16px}
+.searchbar{margin:6px 20px 4px;position:relative}
+.searchbar svg{position:absolute;left:14px;top:50%;margin-top:-10px;width:20px;height:20px;color:var(--mute)}
+.searchbar .inp{padding-left:44px;background:var(--pearl);border-color:transparent}
+
+/* Botones y campos */
+.btn{height:50px;padding:0 22px;border-radius:999px;background:var(--brown);color:#fff;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap}
+.btn svg{width:20px;height:20px}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--brown)}
+.btn.soft{background:var(--pearl);color:var(--ink)}
+.btn.holo{background:var(--holo);color:var(--ink)}
+.btn.danger{background:#fff;color:var(--bad);box-shadow:inset 0 0 0 1.5px #f0c6cf}
+.btn.sm{height:38px;padding:0 16px;font-size:14.5px}
+.btn.block{width:100%}
+.btn:disabled,.btn.off{opacity:.35;pointer-events:none}
+.field{display:block;margin:0 0 14px}
+.field>span{display:block;font-size:13.5px;color:var(--ink2);margin:0 0 6px;font-weight:500}
+.inp{width:100%;min-width:0;color:var(--ink);height:50px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;background:#fff;outline:none;display:block}
+.inp:focus{border-color:var(--brown)}
+textarea.inp{height:auto;padding:12px 14px;min-height:76px;resize:none}
+.picker{width:100%;height:54px;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;display:flex;align-items:center;gap:12px;text-align:left;background:#fff}
+.picker .ph{color:var(--mute)}
+.picker svg:last-child{margin-left:auto;color:var(--mute);width:20px;height:20px}
+.seg{display:flex;background:var(--pearl);border-radius:14px;padding:4px;gap:4px;margin:6px 20px 8px}
+.seg.in{margin:0 0 12px}
+.seg button{flex:1;height:40px;border-radius:11px;font-weight:500;color:var(--ink2)}
+.seg button.on{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 5px rgba(0,0,0,.14)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);font-size:14.5px;background:#fff;text-align:left}
+.chip.on{border-color:var(--brown);background:var(--brown);color:#fff}
+.chip b{font-weight:600} .chip span{color:var(--mute);margin-left:6px}
+.chip.dis{opacity:.4;pointer-events:none}
+.hint{font-size:13.5px;color:var(--mute);margin:-4px 0 14px}
+.sep{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:13px;margin:16px 0}
+.sep::before,.sep::after{content:"";flex:1;height:1px;background:var(--line)}
+.stack{display:flex;flex-direction:column;gap:10px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.two .btn{padding:0 12px}
+
+/* Cobro */
+.line{padding:12px 0;border-bottom:1px solid var(--line)}
+.ln-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600}
+.ln-top button{width:32px;height:32px;display:grid;place-items:center;color:var(--mute)}
+.ln-bot{display:flex;align-items:center;gap:12px;margin-top:8px}
+.step{display:flex;align-items:center;background:var(--pearl);border-radius:12px}
+.step button{width:40px;height:38px;display:grid;place-items:center}
+.step span{min-width:24px;text-align:center;font-weight:600}
+.mini{display:flex;align-items:center;gap:6px;color:var(--ink2)}
+.inp.sm{height:38px;width:92px;border-radius:10px;padding:0 10px}
+.ln-bot .sub{margin-left:auto;font-variant-numeric:tabular-nums}
+.tot{margin:16px 0 4px;padding:16px;border-radius:20px;background:var(--holo-soft)}
+.tot .r{display:flex;justify-content:space-between;align-items:baseline;padding:2px 0}
+.tot .r.big{font-family:var(--fd);font-size:26px;font-weight:600}
+.tot .r.rest{font-family:var(--fd);font-size:21px;font-weight:600;color:var(--warn);padding-top:6px}
+.tot .r.warn{color:var(--warn);font-weight:600}
+.tot small{color:var(--ink2)}
+.kv{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--ink2)}
+.kv span:last-child{font-weight:600;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap;flex:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
+.stats div{background:var(--pearl);border-radius:16px;padding:12px 8px;text-align:center}
+.stats b{display:block;font-family:var(--fd);font-size:19px;font-weight:600;line-height:1.1}
+.stats span{font-size:12.5px;color:var(--ink2)}
+.sum3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 4px}
+.sum3 div{background:var(--pearl);border-radius:16px;padding:12px 10px}
+.sum3 span{display:block;font-size:12.5px;color:var(--ink2)}
+.sum3 b{font-family:var(--fd);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.dates{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding:0 20px 10px}
+.daytitle{padding:16px 20px 2px;font-size:13.5px;color:var(--ink2);font-weight:600}
+canvas.inv{width:100%;height:auto;border-radius:18px;border:1px solid var(--line);display:block}
+
+/* Tienda */
+.catbar{display:flex;gap:8px;overflow-x:auto;padding:4px 20px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.catbar::-webkit-scrollbar{display:none}
+.catbar .chip{flex:none;display:inline-flex;align-items:center}
+.chip svg.i{width:17px;height:17px;margin-right:6px;stroke-width:1.9}
+.cico{width:46px;height:46px;border-radius:16px;background:var(--holo-soft);display:grid;place-items:center;flex:none;color:var(--brown)}
+.cico svg.i{width:24px;height:24px}
+.stock-low{color:var(--warn)!important}
+
+/* Sheets */
+#sheets .sheet-wrap{position:fixed;inset:0;z-index:20;pointer-events:none}
+.scrim{position:absolute;inset:0;background:rgba(59,34,24,.4);opacity:0;transition:opacity .22s}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;max-height:92dvh;background:var(--cream);border-radius:28px 28px 0 0;
+  transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.85,.25,1);display:flex;flex-direction:column;padding-bottom:var(--sab)}
+.sheet.tall{height:92dvh}
+#sheets .sheet-wrap.in{pointer-events:auto}
+.sheet-wrap.in .scrim{opacity:1}
+.sheet-wrap.in .sheet{transform:none}
+.grab{width:42px;height:5px;border-radius:3px;background:#ddd5e4;margin:9px auto 2px;flex:none}
+.sheet-head{display:flex;align-items:center;padding:6px 12px 8px 20px;flex:none}
+.sheet-head h3{font-family:var(--fd);font-size:24px;font-weight:600;flex:1;line-height:1.1}
+.sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 20px 22px;flex:1;overscroll-behavior:contain}
+.sheet-foot{padding:12px 20px 14px;border-top:1px solid var(--line);display:flex;gap:8px;flex:none}
+.sheet-foot .btn{flex:1;height:48px}
+#toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--sab) + 18px);transform:translate(-50%,16px);background:var(--brown);color:#fff;padding:12px 18px;
+  border-radius:999px;opacity:0;transition:opacity .22s,transform .22s;z-index:60;max-width:88%;font-size:14.5px;text-align:center;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#dlg{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(59,34,24,.45);padding:28px}
+#dlg.on{display:flex}
+#dlg .box{background:#fff;border-radius:26px;padding:24px 22px 18px;max-width:340px;width:100%}
+#dlg h4{font-family:var(--fd);font-size:22px;font-weight:600;margin-bottom:6px}
+#dlg p{color:var(--ink2);margin-bottom:18px}
+#dlg .acts{display:flex;gap:10px} #dlg .acts .btn{flex:1}
+#splash{position:fixed;inset:0;z-index:100;background:#fff;display:grid;place-items:center;transition:opacity .3s}
+#splash img{width:150px;height:150px;border-radius:50%;box-shadow:0 4px 30px rgba(200,70,140,.3)}
+#splash.off{opacity:0;pointer-events:none}
+.sync{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:12px}
+.dot{width:10px;height:10px;border-radius:50%;background:#c9c2d0;flex:none}
+.dot.ok{background:#2fbf82} .dot.warn{background:#f0a23a} .dot.bad{background:#e0405a}
+.set-sec{padding:6px 0 10px}
+.set-sec h3{font-family:var(--fd);font-size:22px;font-weight:600;margin:20px 0 10px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (min-width:521px){#app{box-shadow:0 0 0 1px var(--line),0 10px 50px rgba(160,70,110,.12)}}
+</style>
+</head>
+<body>
+<div id="splash"><img src="logo.webp" alt="Dulces M &amp; J"></div>
+<div id="app">
+  <header id="brandbar"></header>
+  <div id="offline" hidden>Sin conexión: tus cambios se guardan y se sincronizan al volver</div>
+  <main id="view"></main>
+  <nav id="tabs"></nav>
+</div>
+<div id="sheets"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="dlg"><div class="box"></div></div>
+<input type="file" id="vcf" accept=".vcf,text/vcard,text/x-vcard" hidden>
+<input type="file" id="restore" accept=".json,application/json" hidden>
+<script>
+'use strict';
+/* =====================================================================
+   DULCES M & J — app instalable (PWA)
+   Para sincronizar entre celulares, pega tu configuración de Firebase
+   abajo (o en Ajustes ▸ Sincronización, dentro de la app).
+   ===================================================================== */
+const FIREBASE_CONFIG = null;   // ej.: {apiKey:"...", authDomain:"...", projectId:"...", appId:"..."}
+
+const LS = 'dulcesmj.v1';
+const COLS = ['clients','services','products','payments','expenses'];
+const DEF = {
+  salonName:'Dulces M & J',
+  address:'Parcelamiento Cruz Verde, calle Pedro Gual',
+  pmBank:'Banco Provincial', pmPhone:'04146908849', pmId:'18292244', pmHolder:'', binanceId:'',
+  payNote:'También cobramos en $ y USDT. Consulta disponibilidad con nosotros.',
+  rate:0, rateDate:'', rateAuto:true, cc:'58', counter:0
+};
+let S = loadState();
+function loadState(){
+  let d={}; try{ d=JSON.parse(localStorage.getItem(LS)||'{}') }catch(e){}
+  const s={}; COLS.forEach(c=>s[c]=d[c]||{});
+  s.settings=Object.assign({},DEF,d.settings||{});
+  return s;
+}
+function save(){ try{ localStorage.setItem(LS,JSON.stringify(S)) }catch(e){ toast('No se pudo guardar en este teléfono') } }
+
+/* ---------- utilidades ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{ if(typeof v==='number') return isFinite(v)?v:0; const n=parseFloat(String(v||'').replace(',','.')); return isFinite(n)?n:0; };
+const r2=n=>Math.round((n+Number.EPSILON)*100)/100;
+const nf=new Intl.NumberFormat('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const eur=n=>'$'+nf.format(r2(n));
+const bsf=n=>'Bs '+nf.format(r2(n));
+const pad2=n=>String(n).padStart(2,'0');
+const nowLocal=()=>{const d=new Date();return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`};
+const dayStr=d=>`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const todayStr=()=>dayStr(new Date());
+const parseD=s=>new Date(s&&s.length<=10?s+'T00:00':s);
+const fDate=s=>parseD(s).toLocaleDateString('es-VE',{weekday:'short',day:'numeric',month:'short'});
+const fDateLong=s=>parseD(s).toLocaleDateString('es-VE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const fTime=s=>parseD(s).toLocaleTimeString('es-VE',{hour:'numeric',minute:'2-digit'});
+const fDT=s=>fDate(s)+', '+fTime(s);
+const digits=s=>String(s||'').replace(/\D/g,'');
+const sum=a=>r2(a.reduce((x,y)=>x+num(y),0));
+const rate=()=>num(S.settings.rate);
+const paidOf=p=>sum((p.abonos||[]).map(a=>a.amount));
+const saldoOf=p=>{const s=r2(num(p.total)-paidOf(p));return s>0.004?s:0};
+const conceptOf=p=>(p.items||[]).map(i=>i.qty>1?`${i.name} ×${i.qty}`:i.name).join(', ');
+const initials=n=>{const w=String(n||'?').trim().split(/\s+/);return ((w[0]||'?')[0]+(w.length>1?w[w.length-1][0]:'')).toUpperCase()};
+const visitsOf=id=>Object.values(S.payments).filter(p=>p.clientId===id);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const byName=(a,b)=>String(a.name).localeCompare(String(b.name),'es');
+const invNum=p=>String(p.num||0).padStart(4,'0');
+
+/* ---------- iconos ---------- */
+const IC={
+  home:'<path d="M6.5 12h11l-1.4 8H7.9z"/><path d="M9.7 12.6l.6 6.8M14.3 12.6l-.6 6.8"/><path d="M5.5 12c-1-2.6.7-5 3.2-5 .2-2 1.9-3.5 3.3-3.5S15.1 5 15.3 7c2.5 0 4.2 2.4 3.2 5"/><circle cx="12" cy="2.4" r=".9"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.1-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M18.5 14.8c1.7.7 2.7 2.4 3 5.2"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  tag:'<path d="M4 4h7l9 9-7 7-9-9z"/><circle cx="8.5" cy="8.5" r="1.3"/>',
+  store:'<path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5c0 1.4 1.1 2.5 2.5 2.5S9 10.9 9 9.5c0 1.4 1.1 2.5 3 2.5s3-1.1 3-2.5c0 1.4 1.1 2.5 2.5 2.5S20 10.9 20 9.5"/><path d="M5.5 12v8h13v-8"/>',
+  cake:'<path d="M4 20.5h16"/><path d="M5.5 20.5V13h13v7.5"/><path d="M5.5 16.5c1.6 1.2 3 1.2 4.2 0 1.3 1.2 3.3 1.2 4.6 0 1.2 1.2 2.6 1.2 4.2 0"/><path d="M12 13V9.8"/><path d="M12 5.2c1 1.1 1 2.3 0 3.4-1-1.1-1-2.3 0-3.4z"/>',
+  candy:'<circle cx="12" cy="12" r="4.2"/><path d="M8.6 10 4 7.5v9L8.6 14M15.4 10 20 7.5v9L15.4 14"/><path d="M10.3 9.5l3.4 5"/>',
+  lolli:'<circle cx="14.5" cy="9.5" r="5.5"/><path d="M11.5 9.5a3 3 0 0 1 3-3M14.5 12.5a3 3 0 0 0 3-3"/><path d="M10.6 13.4 4 20"/>',
+  cookie:'<path d="M20.5 12.4A8.5 8.5 0 1 1 11.6 3.5a3.2 3.2 0 0 0 3.6 3.9 3.2 3.2 0 0 0 5.3 5z"/><circle cx="9" cy="9.5" r=".9"/><circle cx="8.5" cy="14.5" r=".9"/><circle cx="13.5" cy="15.5" r=".9"/><circle cx="15.5" cy="11" r=".9"/>',
+  book:'<path d="M5 4.5h11a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
+  sliders:'<path d="M4 7h9M18 7h2M4 17h2M11 17h9"/><circle cx="15.5" cy="7" r="2.3"/><circle cx="8.5" cy="17" r="2.3"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+  chev:'<path d="m9 5 7 7-7 7"/>',
+  back:'<path d="m15 5-7 7 7 7"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  minus:'<path d="M5 12h14"/>',
+  trash:'<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l.9 12.5h9.2L17.5 7"/>',
+  edit:'<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/>',
+  down:'<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 20h14"/>',
+  copy:'<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7.5a2 2 0 0 0 2 2h2.5"/>',
+  wa:'<path d="M4 20l1.2-4A8 8 0 1 1 8 18.8z"/><path d="M9.2 8.8c-.3 2.6 2.9 5.9 5.9 5.9l1.1-1.4-2-1-.9.7c-.9-.4-1.9-1.4-2.3-2.3l.7-.9-1-2z"/>',
+  share:'<circle cx="6" cy="12" r="2.3"/><circle cx="17.5" cy="6" r="2.3"/><circle cx="17.5" cy="18" r="2.3"/><path d="m8 11 7.5-4M8 13l7.5 4"/>',
+  contacts:'<rect x="5" y="3.5" width="14" height="17" rx="2"/><circle cx="12" cy="10" r="2.5"/><path d="M8 17c.5-2 2-3 4-3s3.5 1 4 3"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  cloud:'<path d="M7 18a4 4 0 0 1-.5-8A5.5 5.5 0 0 1 17 8.5a4.8 4.8 0 0 1 .5 9.5z"/>',
+  cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
+  sheet:'<rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M4.5 9h15M4.5 14.5h15M10 9v11.5"/>'
+};
+const I=(n,cls='')=>`<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
+
+/* ---------- avisos, diálogos, hojas inferiores ---------- */
+let toastT;
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2600); }
+function buzz(n=8){ try{ navigator.vibrate&&navigator.vibrate(n) }catch(e){} }
+function ask(title,msg,ok='Aceptar',danger=false){
+  return new Promise(res=>{
+    const d=$('#dlg');
+    $('.box',d).innerHTML=`<h4>${esc(title)}</h4><p>${esc(msg)}</p><div class="acts"><button class="btn ghost" data-r="0">Cancelar</button><button class="btn ${danger?'danger':''}" data-r="1">${esc(ok)}</button></div>`;
+    d.classList.add('on');
+    d.onclick=e=>{ const b=e.target.closest('[data-r]'); if(b||e.target===d){ d.classList.remove('on'); res(b?b.dataset.r==='1':false); } };
+  });
+}
+const SH=[]; let pendingClose=null;
+function openSheet(html,opt={}){
+  const w=document.createElement('div'); w.className='sheet-wrap';
+  w.innerHTML=`<div class="scrim"></div><section class="sheet${opt.tall?' tall':''}" role="dialog" aria-modal="true"><div class="grab"></div>${html}</section>`;
+  $('#sheets').appendChild(w);
+  history.pushState({s:SH.length+1},'');
+  const e={w,sh:$('.sheet',w),refresh:opt.refresh||null,onClose:opt.onClose||null};
+  SH.push(e);
+  $('.scrim',w).addEventListener('click',closeSheet);
+  dragSheet(e);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>w.classList.add('in')));
+  return e.sh;
+}
+function closeSheet(){ return new Promise(r=>{ if(!SH.length) return r(); pendingClose=r; history.back(); }); }
+function popSheet(){
+  const e=SH.pop(); if(!e) return;
+  e.w.classList.remove('in'); setTimeout(()=>e.w.remove(),320);
+  if(e.onClose) e.onClose();
+}
+window.addEventListener('popstate',()=>{
+  if(SH.length) popSheet();
+  if(pendingClose){ const r=pendingClose; pendingClose=null; r(); }
+});
+function dragSheet(e){
+  const sh=e.sh; let y0=null,dy=0;
+  sh.addEventListener('touchstart',ev=>{ if(!ev.target.closest('.grab,.sheet-head')) return; y0=ev.touches[0].clientY; dy=0; sh.style.transition='none'; },{passive:true});
+  sh.addEventListener('touchmove',ev=>{ if(y0===null) return; dy=Math.max(0,ev.touches[0].clientY-y0); sh.style.transform=`translateY(${dy}px)`; },{passive:true});
+  sh.addEventListener('touchend',()=>{ if(y0===null) return; sh.style.transition=''; sh.style.transform=''; const go=dy>90; y0=null; if(go) closeSheet(); });
+}
+const shHead=(t,extra='')=>`<div class="sheet-head"><h3>${t}</h3>${extra}<button class="ibtn" data-act="close" aria-label="Cerrar">${I('x')}</button></div>`;
+function refreshSheets(){ SH.forEach(e=>{ if(e.refresh) e.refresh(e.sh); }); }
+
+/* ---------- descargas y utilidades de archivos ---------- */
+function saveBlob(blob,name){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
+}
+const loadedJs={};
+function loadScript(src){
+  return loadedJs[src]||(loadedJs[src]=new Promise((res,rej)=>{
+    const s=document.createElement('script'); s.src=src; s.onload=res;
+    s.onerror=()=>{delete loadedJs[src];rej(new Error('No se pudo cargar '+src))}; document.head.appendChild(s);
+  }));
+}
+const clean=o=>JSON.parse(JSON.stringify(o));
+
+/* ---------- datos: guardar / borrar (local + nube) ---------- */
+function put(col,obj){ obj.updatedAt=Date.now(); S[col][obj.id]=obj; save(); cloudSet(col,obj); }
+function del(col,id){ delete S[col][id]; save(); cloudDel(col,id); }
+function saveSettings(){ save(); cloudSettings(); }
+
+/* ---------- WhatsApp ---------- */
+function waNumber(phone){
+  let d=digits(phone); if(!d) return '';
+  if(d.startsWith('00')) d=d.slice(2);
+  else if(d.startsWith('0')) d=(S.settings.cc||'58')+d.slice(1);
+  else if(d.length<=10) d=(S.settings.cc||'58')+d;
+  return d;
+}
+function waLink(phone,text){ const n=waNumber(phone); return `https://wa.me/${n}?text=${encodeURIComponent(text||'')}`; }
+
+/* =====================================================================
+   INTERFAZ
+   ===================================================================== */
+const UI={tab:'inicio',prev:'inicio',cat:'p',pcat:'*',q:'',dr:{preset:'hoy',from:todayStr(),to:todayStr()}};
+const A={},B={},C={},V={};
+const METHODS=['Efectivo $','Pago móvil','Transferencia','Punto de venta','Zelle','USDT','Otro'];
+const CATS=[['t','Tortas','cake'],['c','Caramelos','candy'],['d','Dulces','lolli'],['k','Cookies','cookie'],['o','Otros','tag']];
+const catIcon=id=>(CATS.find(c=>c[0]===id)||CATS[4])[2];
+const catName=id=>(CATS.find(c=>c[0]===id)||CATS[4])[1];
+const fShort=s=>parseD(s).toLocaleDateString('es-VE',{day:'numeric',month:'short'});
+document.addEventListener('click',e=>{ const t=e.target.closest('[data-act]'); if(!t) return; const f=A[t.dataset.act]; if(f){ e.preventDefault(); f(t.dataset,t,e); } });
+document.addEventListener('input',e=>{ const t=e.target.closest('[data-in]'); if(t&&B[t.dataset.in]) B[t.dataset.in](t,e); });
+document.addEventListener('change',e=>{ const t=e.target.closest('[data-ch]'); if(t&&C[t.dataset.ch]) C[t.dataset.ch](t,e); });
+
+const TABS=[['inicio','Inicio','home'],['clientes','Clientes','users'],['cobrar','','plus'],['catalogo','Tienda','store'],['diario','Diario','book']];
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map(([id,l,ic])=>id==='cobrar'
+    ?`<button class="tab-plus" data-act="cobrar" aria-label="Nuevo cobro"><span class="plus"><i>${I(ic)}</i></span></button>`
+    :`<button class="tab ${UI.tab===id?'on':''}" data-act="tab" data-t="${id}">${I(ic)}<span>${l}</span></button>`).join('');
+}
+function renderBar(){
+  $('#brandbar').innerHTML=`<img src="logo.webp" alt=""><span class="bname">Dulces M &amp; J</span><button class="ibtn" data-act="settings" aria-label="Ajustes">${I('sliders')}</button>`;
+}
+function render(keep){ const v=$('#view'); const top=keep?v.scrollTop:0; v.innerHTML=(V[UI.tab]||V.inicio)(); v.scrollTop=top; renderTabs(); }
+function softRender(){
+  if(UI.tab==='ajustes'){ const b=$('#syncbox'); if(b) b.innerHTML=syncHTML(); }
+  else if(UI.tab==='clientes'&&$('#clist')) renderClientList();
+  else render(true);
+  refreshSheets();
+}
+A.tab=d=>{ UI.tab=d.t; render(); buzz(6); };
+A.close=()=>closeSheet();
+A.settings=()=>{ UI.prev=UI.tab; UI.tab='ajustes'; render(); };
+A.back=()=>{ UI.tab=UI.prev||'inicio'; render(); };
+const setSheet=(sh,html)=>{ sh.innerHTML='<div class="grab"></div>'+html; };
+
+/* ---------- Inicio ---------- */
+function payRow(p){
+  const s=saldoOf(p);
+  return `<button class="row" data-act="pay" data-id="${p.id}"><span class="av"><b>${esc(initials(p.clientName))}</b></span>
+    <span class="main"><span class="t">${esc(p.clientName)}</span><span class="s">${esc(fDT(p.date))}</span><span class="s">${esc(conceptOf(p))}</span></span>
+    <span class="v ${s?'warn':''}">${s?`Resta ${eur(s)}`:eur(p.total)}${s?`<small>de ${eur(p.total)}</small>`:''}</span></button>`;
+}
+const welcome=()=>`<div class="empty"><img src="logo.webp" alt=""><h3>Bienvenida a tu dulcería</h3><p>Empieza cargando tus tortas, caramelos, dulces y cookies con sus precios, y luego suma a tus clientes.</p><div class="stack"><button class="btn" data-act="tab" data-t="catalogo">Agregar productos</button><button class="btn ghost" data-act="cli-new">Agregar clientes</button></div></div>`;
+V.inicio=()=>{
+  const h=new Date().getHours(); const g=h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
+  const td=todayStr(); const tot=sum(ledger(td,td).filter(e=>e.kind==='in').map(e=>e.amount));
+  const all=Object.values(S.payments);
+  const nCob=all.filter(p=>p.date.slice(0,10)===td).length;
+  const pend=all.filter(p=>saldoOf(p)>0).sort((a,b)=>a.date.localeCompare(b.date));
+  const recent=all.filter(p=>!saldoOf(p)).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const r=rate();
+  const fresh=!Object.keys(S.clients).length&&!Object.keys(S.services).length&&!all.length;
+  return `<div class="greet"><h1>${g}</h1><p>Así va tu dulcería hoy</p></div>
+  <section class="hero"><div class="lab">Ingresos de hoy</div><div class="big">${eur(tot)}</div>
+    <div class="sub">${nCob} ${nCob===1?'cobro':'cobros'}${r?' · '+bsf(tot*r):''}</div>
+    <button class="ratebtn" data-act="rate">${r?`Tasa BCV: $1 = ${bsf(r)}`:'Poner la tasa BCV'}</button></section>
+  ${fresh?welcome():''}
+  ${pend.length?`<h2 class="sec">Pedidos y saldos pendientes<small>${pend.length}</small></h2><div class="list">${pend.map(payRow).join('')}</div>`:''}
+  ${recent.length?`<h2 class="sec">Últimos cobros</h2><div class="list">${recent.map(payRow).join('')}</div>`:''}`;
+};
+A.rate=()=>rateSheet();
+A.pay=d=>payDetail(d.id);
+
+/* ---------- Clientes ---------- */
+function clientRows(){
+  const q=UI.q.trim().toLowerCase(), qd=digits(UI.q);
+  const list=Object.values(S.clients).filter(c=>!q||c.name.toLowerCase().includes(q)||(qd&&digits(c.phone).includes(qd))).sort(byName);
+  if(!list.length) return Object.keys(S.clients).length
+    ?`<div class="empty"><p>No hay clientes que coincidan con “${esc(UI.q)}”.</p></div>`
+    :`<div class="empty"><img src="logo.webp" alt=""><h3>Aún no tienes clientes</h3><p>Agrégalos desde los contactos de tu celular o escríbelos a mano.</p><button class="btn" data-act="cli-new">Agregar cliente</button></div>`;
+  return list.map(c=>{ const v=visitsOf(c.id).length;
+    return `<button class="row" data-act="cli" data-id="${c.id}"><span class="av"><b>${esc(initials(c.name))}</b></span>
+    <span class="main"><span class="t">${esc(c.name)}</span><span class="s">${esc(c.phone||'Sin teléfono')}</span></span>
+    <span class="v">${v}<small>${v===1?'compra':'compras'}</small></span></button>`; }).join('');
+}
+function renderClientList(){ const l=$('#clist'); if(l) l.innerHTML=clientRows(); }
+V.clientes=()=>`<div class="top"><h1>Clientes</h1><button class="ibtn" data-act="cli-new" aria-label="Agregar cliente">${I('plus')}</button></div>
+  <label class="searchbar">${I('search')}<input class="inp" type="search" placeholder="Buscar por nombre o teléfono" value="${esc(UI.q)}" data-in="cq" autocomplete="off"></label>
+  <div id="clist" class="list">${clientRows()}</div>`;
+B.cq=t=>{ UI.q=t.value; renderClientList(); };
+
+let CF={};
+function clientForm(c,cb){
+  const isNew=!c;
+  const sh=openSheet(`${shHead(isNew?'Nuevo cliente':'Editar cliente')}<div class="sheet-body">
+    ${isNew?`<button class="btn soft block" data-act="pick-contacts">${I('contacts')} Elegir de mis contactos</button><div class="sep">o escribe los datos</div>`:''}
+    <label class="field"><span>Nombre</span><input class="inp" id="cf-name" autocomplete="off" autocapitalize="words" value="${esc(c?c.name:'')}"></label>
+    <label class="field"><span>Teléfono</span><input class="inp" id="cf-phone" type="tel" inputmode="tel" value="${esc(c?c.phone:'')}"></label>
+    <label class="field"><span>Notas</span><textarea class="inp" id="cf-notes" placeholder="Gustos, sabores favoritos, fechas especiales…">${esc(c?c.notes||'':'')}</textarea></label>
+  </div><div class="sheet-foot"><button class="btn" data-act="cf-save">Guardar</button></div>`);
+  CF={id:c&&c.id,cb,sh};
+}
+A['cli-new']=()=>clientForm(null);
+A['cf-save']=async()=>{
+  const {id,cb,sh}=CF; const name=$('#cf-name',sh).value.trim();
+  if(!name){ toast('Escribe el nombre del cliente'); return; }
+  const c=id?{...S.clients[id]}:{id:uid(),createdAt:Date.now()};
+  Object.assign(c,{name,phone:$('#cf-phone',sh).value.trim(),notes:$('#cf-notes',sh).value.trim()});
+  put('clients',c);
+  if(id) Object.values(S.payments).forEach(p=>{ if(p.clientId===id&&p.clientName!==name) put('payments',{...p,clientName:name}); });
+  buzz(); await closeSheet(); toast(id?'Cambios guardados':'Cliente agregado'); softRender(); if(cb) cb(c);
+};
+A['pick-contacts']=async()=>{
+  if('contacts' in navigator && 'ContactsManager' in window){
+    try{
+      const r=await navigator.contacts.select(['name','tel'],{multiple:true});
+      await addContacts(r.map(x=>({name:((x.name&&x.name[0])||'').trim(),phone:((x.tel&&x.tel[0])||'').trim()})).filter(x=>x.name||x.phone));
+    }catch(e){ if(!e||e.name!=='AbortError') toast('No se pudo abrir tus contactos'); }
+  }else{
+    toast('Tu navegador no abre los contactos directo: elige un archivo .vcf'); $('#vcf').click();
+  }
+};
+async function addContacts(list){
+  if(!list||!list.length) return;
+  if(list.length>15 && !(await ask('Agregar contactos',`Se agregarán hasta ${list.length} contactos como clientes. ¿Continuar?`,'Agregar'))) return;
+  const cb=CF.cb; let added=0, first=null;
+  list.forEach(x=>{
+    const ph=digits(x.phone), name=x.name||x.phone;
+    const ex=Object.values(S.clients).find(c=>(ph.length>=7&&digits(c.phone).slice(-9)===ph.slice(-9))||c.name.toLowerCase()===name.toLowerCase());
+    if(ex){ first=first||ex; return; }
+    const c={id:uid(),name,phone:x.phone,notes:'',createdAt:Date.now()}; put('clients',c); added++; first=first||c;
+  });
+  if(CF.sh&&SH.some(e=>e.sh===CF.sh)) await closeSheet();
+  buzz(); toast(added?(added===1?'Cliente agregado':`${added} clientes agregados`):'Esos contactos ya estaban en tu lista');
+  softRender(); if(cb&&first) cb(first);
+}
+function parseVcf(t){
+  const out=[];
+  t.split(/BEGIN:VCARD/i).slice(1).forEach(b=>{
+    let name='',phone='';
+    b.replace(/\r?\n[ \t]/g,'').split(/\r?\n/).forEach(l=>{
+      const v=l.slice(l.indexOf(':')+1).trim();
+      if(/^FN[:;]/i.test(l)){ if(!name) name=v; }
+      else if(/^N[:;]/i.test(l)){ if(!name){ const p=v.split(';'); name=((p[1]||'')+' '+(p[0]||'')).trim(); } }
+      else if(/^TEL[:;]/i.test(l)){ if(!phone) phone=v; }
+    });
+    if(name||phone) out.push({name,phone});
+  });
+  return out;
+}
+$('#vcf').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  const list=parseVcf(await f.text());
+  if(!list.length){ toast('No encontré contactos en ese archivo'); return; }
+  addContacts(list);
+});
+
+A.cli=d=>clientDetail(d.id);
+function clientDetail(id){
+  const html=()=>{
+    const c=S.clients[id]; if(!c) return null;
+    const vs=visitsOf(id).sort((a,b)=>b.date.localeCompare(a.date));
+    const paid=sum(vs.map(paidOf));
+    return `${shHead(esc(c.name),`<button class="ibtn" data-act="cli-edit" data-id="${id}" aria-label="Editar">${I('edit')}</button>`)}
+    <div class="sheet-body">
+      <p class="muted" style="margin:-4px 0 4px">${esc(c.phone||'Sin teléfono')}</p>
+      <div class="stats"><div><b>${vs.length}</b><span>${vs.length===1?'compra':'compras'}</span></div><div><b>${eur(paid)}</b><span>pagado</span></div><div><b>${vs.length?esc(fDate(vs[0].date)):'—'}</b><span>última</span></div></div>
+      ${c.notes?`<p style="margin-bottom:14px;color:var(--ink2)">${esc(c.notes)}</p>`:''}
+      <div class="two"><button class="btn ghost ${c.phone?'':'off'}" data-act="cli-wa" data-id="${id}">${I('wa')} WhatsApp</button><button class="btn" data-act="cobrar" data-cid="${id}">${I('plus')} Cobro</button></div>
+      <h2 class="sec" style="padding-left:0;padding-right:0">Historial</h2>
+      ${vs.length?vs.map(payRow).join(''):'<p class="muted">Todavía no tiene compras registradas.</p>'}
+      <button class="btn danger block" style="margin-top:22px" data-act="cli-del" data-id="${id}">${I('trash')} Eliminar cliente</button>
+    </div>`;
+  };
+  const sh=openSheet(html(),{tall:true,refresh:s=>{ const h=html(); if(h===null) closeSheet(); else { const st=$('.sheet-body',s).scrollTop; setSheet(s,h); $('.sheet-body',s).scrollTop=st; } }});
+}
+A['cli-edit']=d=>clientForm(S.clients[d.id]);
+A['cli-wa']=d=>{ const c=S.clients[d.id]; if(c&&c.phone) window.open(waLink(c.phone,`Hola ${c.name.split(' ')[0]} 🧁`),'_blank'); };
+A['cli-del']=async d=>{
+  const c=S.clients[d.id]; if(!c) return;
+  if(await ask('Eliminar cliente',`Se borrará a ${c.name}. Sus cobros anteriores se conservan en el libro diario.`,'Eliminar',true)){ del('clients',d.id); buzz(20); toast('Cliente eliminado'); softRender(); }
+};
+
+/* ---------- Tienda (productos con existencia y encargos) ---------- */
+const stockLabel=i=>num(i.stock)<=0?'Agotado':`${num(i.stock)} en existencia`;
+V.catalogo=()=>{
+  const k=UI.cat; const all=Object.values(k==='s'?S.services:S.products);
+  let items=all.slice().sort(byName);
+  if(k==='p'&&UI.pcat!=='*') items=items.filter(i=>(i.cat||'o')===UI.pcat);
+  const empty=`<div class="empty"><img src="logo.webp" alt=""><h3>${k==='p'?'Tu inventario':'Pedidos por encargo'}</h3><p>${k==='p'?'Registra tus tortas, caramelos, dulces y cookies con su precio y existencia.':'Para tortas personalizadas, decoraciones, delivery… cosas que se hacen por pedido y no llevan existencia.'}</p><button class="btn" data-act="item-new" data-k="${k}">${k==='p'?'Agregar producto':'Agregar encargo'}</button></div>`;
+  const prods=Object.values(S.products);
+  const units=prods.reduce((a,p)=>a+Math.max(0,num(p.stock)),0), out=prods.filter(p=>num(p.stock)<=0).length;
+  const sum=k==='p'&&prods.length?`<div class="sum3" style="padding-bottom:12px"><div><span>Productos</span><b>${prods.length}</b></div><div><span>Unidades</span><b>${units}</b></div><div><span>Agotados</span><b${out?' style="color:var(--bad)"':''}>${out}</b></div></div>`:'';
+  const bar=k==='p'&&prods.length?`<div class="catbar"><button class="chip ${UI.pcat==='*'?'on':''}" data-act="pcat" data-c="*">Todo</button>${CATS.map(c=>`<button class="chip ${UI.pcat===c[0]?'on':''}" data-act="pcat" data-c="${c[0]}">${I(c[2])}${c[1]}</button>`).join('')}</div>`:'';
+  const row=i=>k==='p'
+    ?`<button class="row" data-act="item" data-k="p" data-id="${i.id}"><span class="cico">${I(catIcon(i.cat))}</span><span class="main"><span class="t">${esc(i.name)}</span><span class="s ${num(i.stock)<=2?'stock-low':''}">${esc(catName(i.cat))} · ${stockLabel(i)}</span></span><span class="v">${eur(i.price)}</span>${I('chev')}</button>`
+    :`<button class="row" data-act="item" data-k="s" data-id="${i.id}"><span class="main"><span class="t">${esc(i.name)}</span></span><span class="v">${eur(i.price)}</span>${I('chev')}</button>`;
+  const body=!all.length?empty:(items.length?items.map(row).join(''):`<div class="empty"><p>No hay productos en esta categoría.</p></div>`);
+  return `<div class="top"><h1>Tienda</h1><button class="ibtn" data-act="item-new" data-k="${k}" aria-label="Agregar">${I('plus')}</button></div>
+  <div class="seg"><button class="${k==='p'?'on':''}" data-act="cat" data-k="p">Productos</button><button class="${k==='s'?'on':''}" data-act="cat" data-k="s">Encargos</button></div>
+  ${sum}${bar}
+  <div class="list">${body}</div>`;
+};
+A.pcat=d=>{ UI.pcat=d.c; render(true); };
+A.cat=d=>{ UI.cat=d.k; render(); };
+let IF={};
+function ifDraw(){ const b=$('#if-cats',IF.sh); if(b) b.innerHTML=CATS.map(c=>`<button class="chip ${IF.cat===c[0]?'on':''}" data-act="if-cat" data-c="${c[0]}">${I(c[2])}${c[1]}</button>`).join(''); }
+A['if-cat']=d=>{ IF.cat=d.c; ifDraw(); };
+function itemForm(k,it){
+  const prod=k==='p';
+  const sh=openSheet(`${shHead(it?(prod?'Editar producto':'Editar encargo'):(prod?'Nuevo producto':'Nuevo encargo'))}<div class="sheet-body">
+    <label class="field"><span>Nombre</span><input class="inp" id="if-name" autocomplete="off" autocapitalize="sentences" value="${esc(it?it.name:'')}" placeholder="${prod?'Torta de chocolate, cookies de avena…':'Torta personalizada, delivery…'}"></label>
+    ${prod?`<div class="field"><span>Categoría</span><div class="chips" id="if-cats"></div></div>`:''}
+    <label class="field"><span>Precio ($)</span><input class="inp" id="if-price" inputmode="decimal" value="${it?String(it.price).replace('.',','):''}" placeholder="0,00"></label>
+    ${prod?`<label class="field"><span>Existencia</span><input class="inp" id="if-stock" inputmode="numeric" value="${it?num(it.stock):''}" placeholder="0"></label>`:''}
+  </div><div class="sheet-foot">${it?`<button class="btn danger" data-act="if-del" style="flex:0 0 auto" aria-label="Eliminar">${I('trash')}</button>`:''}<button class="btn" data-act="if-save">Guardar</button></div>`);
+  IF={k,id:it&&it.id,sh,cat:(it&&it.cat)||'t'}; ifDraw();
+}
+A['item-new']=d=>itemForm(d.k||UI.cat);
+A.item=d=>itemForm(d.k,(d.k==='s'?S.services:S.products)[d.id]);
+A['if-save']=async()=>{
+  const {k,id,sh}=IF; const name=$('#if-name',sh).value.trim(); const price=num($('#if-price',sh).value);
+  if(!name){ toast('Escribe el nombre'); return; }
+  const col=k==='s'?'services':'products'; const o=id?{...S[col][id]}:{id:uid(),createdAt:Date.now()};
+  Object.assign(o,{name,price:r2(price)}); if(k==='p'){ o.stock=Math.max(0,Math.round(num($('#if-stock',sh).value))); o.cat=IF.cat; }
+  put(col,o); buzz(); await closeSheet(); toast('Guardado'); softRender();
+};
+A['if-del']=async()=>{
+  const {k,id}=IF; const col=k==='s'?'services':'products'; const o=S[col][id];
+  if(await ask('Eliminar',`Se quitará “${o.name}” de la tienda. Los cobros anteriores no cambian.`,'Eliminar',true)){ del(col,id); await closeSheet(); toast('Eliminado'); softRender(); }
+};
+
+/* ---------- Cobros ---------- */
+let CB=null;
+const cbTotal=()=>sum(CB.D.items.map(i=>num(i.price)*i.qty));
+A.cobrar=d=>cobroSheet({clientId:d.cid});
+function cobroSheet(o={}){
+  const p=o.payment;
+  const D=p?{clientId:p.clientId,date:p.date,items:clone(p.items),note:p.note||'',mode:'full',abono:'',method:p.method||'Efectivo $',kind:'p'}
+           :{clientId:o.clientId||'',date:nowLocal(),items:[],note:'',mode:'full',abono:'',method:'Efectivo $',kind:'p'};
+  const sh=openSheet(`${shHead(p?'Editar cobro':'Nuevo cobro')}<div class="sheet-body">
+    <div class="field"><span>Cliente</span><button class="picker" id="cb-client" data-act="cb-client"></button></div>
+    <label class="field"><span>Fecha y hora</span><input class="inp" type="datetime-local" value="${esc(D.date)}" data-in="cb-date"></label>
+    <div class="field"><span>Productos y encargos</span>
+      <div class="seg in" id="cb-kseg"><button data-act="cb-kind" data-k="p">Productos</button><button data-act="cb-kind" data-k="s">Encargos</button></div>
+      <div class="chips" id="cb-chips"></div></div>
+    <div id="cb-lines"></div>
+    <button class="btn ghost sm" data-act="cb-free" style="margin-top:12px">${I('plus')} Otro concepto</button>
+    ${p?'':`<div class="field" style="margin-top:22px"><span>Pago</span>
+      <div class="seg in" id="cb-mseg"><button data-act="cb-mode" data-m="full">Pagó completo</button><button data-act="cb-mode" data-m="abono">Abono</button></div>
+      <input class="inp" id="cb-abono" inputmode="decimal" placeholder="Monto del abono en $" data-in="cb-abono" style="margin-bottom:12px" hidden>
+      <div class="chips" id="cb-methods"></div></div>`}
+    <label class="field" style="margin-top:8px"><span>Nota</span><input class="inp" value="${esc(D.note)}" data-in="cb-note" placeholder="Opcional" autocomplete="off"></label>
+    <div class="tot" id="cb-tot"></div>
+  </div><div class="sheet-foot"><button class="btn block" data-act="cb-save">${p?'Guardar cambios':'Guardar cobro'}</button></div>`,{tall:true,onClose:()=>{CB=null}});
+  CB={D,sh,editing:p?p.id:null,old:p||null};
+  cbDraw();
+}
+function cbDraw(){
+  const {D,sh}=CB; const c=S.clients[D.clientId];
+  $('#cb-client',sh).innerHTML=c?`<span class="av" style="width:36px;height:36px"><b style="font-size:16px">${esc(initials(c.name))}</b></span><span>${esc(c.name)}</span>${I('chev')}`:`<span class="ph">Elegir cliente</span>${I('chev')}`;
+  $$('#cb-kseg button',sh).forEach(b=>b.classList.toggle('on',b.dataset.k===D.kind));
+  const src=Object.values(D.kind==='s'?S.services:S.products).sort(byName);
+  $('#cb-chips',sh).innerHTML=src.length?src.map(i=>`<button class="chip ${D.kind==='p'&&num(i.stock)<=0&&!CB.editing?'dis':''}" data-act="cb-add" data-k="${D.kind}" data-id="${i.id}">${D.kind==='p'?I(catIcon(i.cat)):''}<b>${esc(i.name)}</b><span>${eur(i.price)}${D.kind==='p'?' · '+(num(i.stock)<=0?'agotado':num(i.stock)):''}</span></button>`).join('')
+    :`<p class="hint" style="margin:0">${D.kind==='s'?'Aún no tienes encargos en la tienda. Usa “Otro concepto” o agrégalos en Tienda.':'Aún no tienes productos en la tienda. Agrégalos en Tienda.'}</p>`;
+  $('#cb-lines',sh).innerHTML=D.items.map((it,i)=>`<div class="line"><div class="ln-top"><span>${esc(it.name)}</span><button data-act="cb-rm" data-i="${i}" aria-label="Quitar">${I('x')}</button></div>
+    <div class="ln-bot"><div class="step"><button data-act="cb-dec" data-i="${i}" aria-label="Menos">${I('minus')}</button><span>${it.qty}</span><button data-act="cb-inc" data-i="${i}" aria-label="Más">${I('plus')}</button></div>
+    <label class="mini">$<input class="inp sm" inputmode="decimal" value="${String(it.price).replace('.',',')}" data-in="cb-price" data-i="${i}"></label>
+    <b class="sub" id="cb-sub${i}">${eur(num(it.price)*it.qty)}</b></div></div>`).join('');
+  if(!CB.editing){
+    $$('#cb-mseg button',sh).forEach(b=>b.classList.toggle('on',b.dataset.m===D.mode));
+    $('#cb-abono',sh).hidden=D.mode!=='abono';
+    $('#cb-methods',sh).innerHTML=METHODS.map(m=>`<button class="chip ${D.method===m?'on':''}" data-act="cb-method" data-m="${m}">${m}</button>`).join('');
+  }
+  cbTotals();
+}
+function cbTotals(){
+  const {D,sh}=CB; const t=cbTotal(), r=rate();
+  let paid=CB.editing?paidOf(CB.old):(D.mode==='full'?t:Math.min(num(D.abono),t));
+  paid=Math.min(paid,t); const saldo=r2(t-paid);
+  let rows='';
+  if(t>0){
+    if(paid>0.004&&saldo>0.004) rows=`<div class="r"><span>Abono recibido</span><b style="color:var(--ok)">− ${eur(paid)}</b></div>`;
+    else if(saldo<=0.004) rows=`<div class="r"><span>Pago completo</span><b>${eur(paid)}</b></div>`;
+    if(saldo>0.004) rows+=`<div class="r rest"><span>Resta por pagar</span><span>${eur(saldo)}</span></div>${r?`<div class="r"><small>Resta en bolívares</small><small>${bsf(saldo*r)}</small></div>`:''}<small>Quedará como pedido apartado con saldo pendiente.</small>`;
+  }
+  $('#cb-tot',sh).innerHTML=`<div class="r big"><span>Total</span><span>${eur(t)}</span></div>${r?`<div class="r"><small>En bolívares</small><small>${bsf(t*r)}</small></div>`:''}${rows}`;
+}
+B['cb-date']=t=>{ if(CB) CB.D.date=t.value; };
+B['cb-note']=t=>{ if(CB) CB.D.note=t.value; };
+B['cb-abono']=t=>{ if(CB){ CB.D.abono=t.value; cbTotals(); } };
+B['cb-price']=t=>{ if(!CB) return; const i=+t.dataset.i, it=CB.D.items[i]; it.price=num(t.value); const s=$('#cb-sub'+i,CB.sh); if(s) s.textContent=eur(it.price*it.qty); cbTotals(); };
+A['cb-kind']=d=>{ CB.D.kind=d.k; cbDraw(); };
+A['cb-mode']=d=>{ CB.D.mode=d.m; cbDraw(); if(d.m==='abono'){ const sh=CB.sh; setTimeout(()=>{ const i=$('#cb-abono',sh); if(i&&CB) i.focus(); },50); } };
+A['cb-method']=d=>{ CB.D.method=d.m; cbDraw(); };
+A['cb-add']=d=>{
+  const it=(d.k==='s'?S.services:S.products)[d.id]; if(!it) return;
+  const ex=CB.D.items.find(x=>x.k===d.k&&x.id===d.id);
+  if(ex){ if(d.k==='p'&&!CB.editing&&ex.qty>=num(it.stock)){ toast('No hay más existencias'); return; } ex.qty++; }
+  else CB.D.items.push({k:d.k,id:d.id,name:it.name,price:it.price,qty:1});
+  buzz(6); cbDraw();
+};
+A['cb-inc']=d=>{ const it=CB.D.items[+d.i]; if(it.k==='p'&&!CB.editing){ const pr=S.products[it.id]; if(pr&&it.qty>=num(pr.stock)){ toast('No hay más existencias'); return; } } it.qty++; cbDraw(); };
+A['cb-dec']=d=>{ const it=CB.D.items[+d.i]; if(it.qty>1) it.qty--; else CB.D.items.splice(+d.i,1); cbDraw(); };
+A['cb-rm']=d=>{ CB.D.items.splice(+d.i,1); cbDraw(); };
+A['cb-client']=()=>clientPicker(c=>{ if(CB){ CB.D.clientId=c.id; cbDraw(); } });
+A['cb-free']=()=>{
+  const sh=openSheet(`${shHead('Otro concepto')}<div class="sheet-body">
+    <label class="field"><span>Descripción</span><input class="inp" id="fr-name" autocomplete="off" placeholder="Ej.: Torta para cumpleaños"></label>
+    <label class="field"><span>Precio ($)</span><input class="inp" id="fr-price" inputmode="decimal" placeholder="0,00"></label></div>
+    <div class="sheet-foot"><button class="btn" data-act="fr-add">Agregar</button></div>`);
+  window.FR=sh;
+};
+A['fr-add']=async()=>{
+  const name=$('#fr-name',FR).value.trim(), price=num($('#fr-price',FR).value);
+  if(!name||!(price>0)){ toast('Escribe la descripción y el precio'); return; }
+  await closeSheet(); if(CB){ CB.D.items.push({k:'f',id:uid(),name,price:r2(price),qty:1}); cbDraw(); }
+};
+let PK={};
+function clientPicker(onPick){
+  const sh=openSheet(`${shHead('Elegir cliente')}<div class="sheet-body" style="padding-top:0">
+    <button class="btn soft block" data-act="pk-new">${I('plus')} Nuevo cliente</button>
+    <label class="searchbar" style="margin:12px 0 4px">${I('search')}<input class="inp" type="search" placeholder="Buscar" data-in="pq" autocomplete="off"></label>
+    <div id="pk-list"></div></div>`,{tall:true});
+  PK={onPick,q:'',sh}; pkDraw();
+}
+function pkDraw(){
+  const q=PK.q.trim().toLowerCase(), qd=digits(PK.q);
+  const l=Object.values(S.clients).filter(c=>!q||c.name.toLowerCase().includes(q)||(qd&&digits(c.phone).includes(qd))).sort(byName);
+  $('#pk-list',PK.sh).innerHTML=l.length?l.map(c=>`<button class="row" data-act="pk-pick" data-id="${c.id}"><span class="av"><b>${esc(initials(c.name))}</b></span><span class="main"><span class="t">${esc(c.name)}</span><span class="s">${esc(c.phone||'Sin teléfono')}</span></span></button>`).join('')
+    :`<div class="empty"><p>${Object.keys(S.clients).length?'No hay resultados.':'Aún no tienes clientes. Agrega el primero con el botón de arriba.'}</p></div>`;
+}
+B.pq=t=>{ PK.q=t.value; pkDraw(); };
+A['pk-pick']=async d=>{ const cb=PK.onPick; await closeSheet(); cb(S.clients[d.id]); };
+A['pk-new']=()=>clientForm(null,async c=>{ const cb=PK.onPick; await closeSheet(); cb(c); });
+
+function stockMove(items,dir){
+  (items||[]).forEach(it=>{ if(it.k!=='p') return; const pr=S.products[it.id]; if(!pr) return;
+    put('products',{...pr,stock:Math.max(0,num(pr.stock)+dir*it.qty)}); });
+}
+A['cb-save']=()=>{
+  const {D,sh,editing,old}=CB;
+  if(!D.clientId){ toast('Elige un cliente'); return; }
+  if(!D.items.length){ toast('Agrega al menos un producto o encargo'); return; }
+  const total=cbTotal(); if(!(total>0)){ toast('El total debe ser mayor a 0'); return; }
+  const c=S.clients[D.clientId];
+  buzz(15);
+  if(editing){
+    stockMove(old.items,+1);
+    const p={...old,clientId:c.id,clientName:c.name,date:D.date,items:clone(D.items),total,note:D.note.trim()};
+    stockMove(p.items,-1); put('payments',p);
+    closeSheet().then(()=>{ toast('Cobro actualizado'); softRender(); });
+    return;
+  }
+  let paid=D.mode==='full'?total:Math.min(num(D.abono),total);
+  if(D.mode==='abono'&&!(paid>0)){ toast('Escribe el monto del abono'); return; }
+  S.settings.counter=num(S.settings.counter)+1; saveSettings();
+  const p={id:uid(),num:S.settings.counter,clientId:c.id,clientName:c.name,date:D.date,items:clone(D.items),total,
+    abonos:paid>0?[{id:uid(),date:D.date,amount:r2(paid),method:D.method}]:[],method:D.method,note:D.note.trim(),rate:rate(),createdAt:Date.now()};
+  stockMove(p.items,-1); put('payments',p);
+  softRender();
+  CB=null; showInvoice(sh,p);
+};
+
+/* ---------- Detalle de un cobro ---------- */
+function payDetail(id){
+  const html=()=>{
+    const p=S.payments[id]; if(!p) return null;
+    const s=saldoOf(p), paid=paidOf(p), c=S.clients[p.clientId];
+    return `${shHead(esc(p.clientName))}<div class="sheet-body">
+      <div style="margin:-2px 0 12px">${s?'<span class="pill warn">Pedido apartado · saldo pendiente</span>':'<span class="pill ok">Pagado</span>'}</div>
+      <div class="kv"><span>Fecha y hora</span><span>${esc(fDT(p.date))}</span></div>
+      ${p.items.map(i=>`<div class="kv"><span>${esc(i.name)}${i.qty>1?` ×${i.qty}`:''}</span><span>${eur(num(i.price)*i.qty)}</span></div>`).join('')}
+      <div class="kv"><span>Total</span><span>${eur(p.total)}${rate()||p.rate?` · ${bsf(p.total*(p.rate||rate()))}`:''}</span></div>
+      ${(p.abonos||[]).map(a=>`<div class="kv"><span style="white-space:normal">Abono · ${esc(a.method||'Pago')} · ${esc(fDT(a.date))}</span><span style="color:var(--ok)">− ${eur(a.amount)}<button data-act="ab-del" data-pid="${id}" data-aid="${a.id}" aria-label="Quitar pago" style="color:var(--mute);display:grid;place-items:center;width:28px;height:28px">${I('x')}</button></span></div>`).join('')}
+      ${s?`<div class="kv"><span><b>Resta por pagar</b></span><span style="color:var(--warn)">${eur(s)}</span></div>`:''}
+      ${p.note?`<p class="muted" style="margin-top:10px">${esc(p.note)}</p>`:''}
+      <div class="stack" style="margin-top:20px">
+        <button class="btn" data-act="pay-inv" data-id="${id}">${I('share')} Ver y enviar factura</button>
+        ${s?`<button class="btn holo" data-act="ab-new" data-id="${id}">${I('plus')} Registrar pago del saldo</button>`:''}
+        ${s&&c&&c.phone?`<button class="btn ghost" data-act="pay-remind" data-id="${id}">${I('wa')} Recordar saldo</button>`:''}
+        <div class="two"><button class="btn soft" data-act="pay-edit" data-id="${id}">${I('edit')} Editar</button><button class="btn danger" data-act="pay-del" data-id="${id}">${I('trash')} Eliminar</button></div>
+      </div></div>`;
+  };
+  openSheet(html(),{tall:true,refresh:s=>{ const h=html(); if(h===null) closeSheet(); else { const st=$('.sheet-body',s).scrollTop; setSheet(s,h); $('.sheet-body',s).scrollTop=st; } }});
+}
+A['pay-inv']=d=>openInvoice(d.id);
+A['pay-edit']=d=>cobroSheet({payment:S.payments[d.id]});
+A['pay-del']=async d=>{
+  const p=S.payments[d.id]; if(!p) return;
+  if(await ask('Eliminar cobro',`Se borrará el cobro de ${p.clientName} y sus pagos del libro diario. Los productos vuelven al inventario.`,'Eliminar',true)){
+    stockMove(p.items,+1); del('payments',d.id); buzz(20); await closeSheet(); toast('Cobro eliminado'); softRender();
+  }
+};
+A['ab-del']=async d=>{
+  const p=S.payments[d.pid]; if(!p) return;
+  if(await ask('Quitar pago','Este pago dejará de contar en el libro diario.','Quitar',true)){ put('payments',{...p,abonos:p.abonos.filter(a=>a.id!==d.aid)}); softRender(); }
+};
+A['pay-remind']=d=>{
+  const p=S.payments[d.id], c=S.clients[p.clientId]; if(!p||!c) return;
+  const s=saldoOf(p), r=p.rate||rate(); const s0=S.settings;
+  let t=`Hola ${c.name.split(' ')[0]} 🧁 te escribimos de ${s0.salonName}.\nTe resta por pagar ${eur(s)}${r?` (${bsf(s*r)})`:''} de tu pedido del ${fDT(p.date)}${paidOf(p)>0?`, luego de tu abono de ${eur(paidOf(p))}`:''}.`;
+  if(s0.pmPhone||s0.pmId||s0.binanceId) t+='\n\n'+pmText(s,r);
+  t+='\n¡Gracias!';
+  window.open(waLink(c.phone,t),'_blank');
+};
+let AB={};
+A['ab-new']=d=>{
+  const p=S.payments[d.id]; const sh=openSheet(`${shHead('Pago del saldo')}<div class="sheet-body">
+    <label class="field"><span>Monto ($)</span><input class="inp" id="ab-amt" inputmode="decimal" value="${String(saldoOf(p)).replace('.',',')}"></label>
+    <label class="field"><span>Fecha y hora</span><input class="inp" id="ab-date" type="datetime-local" value="${nowLocal()}"></label>
+    <div class="field"><span>Método</span><div class="chips" id="ab-methods"></div></div></div>
+    <div class="sheet-foot"><button class="btn" data-act="ab-save">Guardar pago</button></div>`);
+  AB={pid:d.id,method:'Efectivo $',sh}; abDraw();
+};
+function abDraw(){ $('#ab-methods',AB.sh).innerHTML=METHODS.map(m=>`<button class="chip ${AB.method===m?'on':''}" data-act="ab-m" data-m="${m}">${m}</button>`).join(''); }
+A['ab-m']=d=>{ AB.method=d.m; abDraw(); };
+A['ab-save']=async()=>{
+  const p=S.payments[AB.pid]; const amt=num($('#ab-amt',AB.sh).value); const date=$('#ab-date',AB.sh).value||nowLocal();
+  if(!(amt>0)){ toast('Escribe el monto'); return; }
+  put('payments',{...p,abonos:[...(p.abonos||[]),{id:uid(),date,amount:r2(amt),method:AB.method}]});
+  buzz(15); await closeSheet(); toast('Pago registrado'); softRender();
+};
+
+/* ---------- Tasa BCV ---------- */
+function rateSheet(){
+  const sh=openSheet(`${shHead('Tasa BCV')}<div class="sheet-body">
+    <p class="hint">Cuántos bolívares vale $1 hoy. Se usa para mostrar el monto en Bs en cobros y facturas.</p>
+    <label class="field"><span>$1 = Bs</span><input class="inp" id="rt-val" inputmode="decimal" value="${rate()?String(rate()).replace('.',','):''}" placeholder="0,00"></label>
+    <button class="btn ghost block" data-act="rate-fetch">Buscar la tasa de hoy</button>
+    <p class="hint" style="margin-top:12px">${S.settings.rateDate?`Última actualización: ${esc(S.settings.rateDate)}`:''}</p></div>
+    <div class="sheet-foot"><button class="btn" data-act="rate-save">Guardar</button></div>`);
+  window.RT=sh;
+}
+A['rate-save']=async()=>{ const v=num($('#rt-val',RT).value); S.settings.rate=v; S.settings.rateDate=todayStr(); S.settings.rateAuto=false; saveSettings(); await closeSheet(); toast('Tasa guardada'); softRender(); };
+A['rate-fetch']=async()=>{
+  toast('Buscando tasa…'); const v=await fetchRate();
+  if(v){ $('#rt-val',RT).value=String(v).replace('.',','); toast('Tasa encontrada: '+bsf(v)); } else toast('No pude obtenerla. Escríbela a mano.');
+};
+async function fetchRate(){
+  for(const u of ['https://ve.dolarapi.com/v1/dolares/oficial','https://ve.dolarapi.com/v1/dolares']){
+    try{
+      const r=await fetch(u,{cache:'no-store'}); if(!r.ok) continue; let j=await r.json();
+      if(Array.isArray(j)) j=j.find(x=>/oficial|bcv/i.test((x.fuente||'')+(x.nombre||'')))||j[0];
+      const v=num(j&&(j.promedio!=null?j.promedio:(j.venta!=null?j.venta:j.compra)));
+      if(v>0) return r2(v);
+    }catch(e){}
+  }
+  return 0;
+}
+async function autoRate(){
+  if(!S.settings.rateAuto||!navigator.onLine||S.settings.rateDate===todayStr()) return;
+  const v=await fetchRate(); if(v){ S.settings.rate=v; S.settings.rateDate=todayStr(); saveSettings(); softRender(); }
+}
+
+/* ---------- Libro diario ---------- */
+function ledger(from,to){
+  const out=[];
+  Object.values(S.payments).forEach(p=>(p.abonos||[]).forEach(a=>{
+    const d=(a.date||'').slice(0,10);
+    if(d>=from&&d<=to) out.push({kind:'in',date:a.date,amount:num(a.amount),method:a.method||'',concept:conceptOf(p),who:p.clientName,pid:p.id});
+  }));
+  Object.values(S.expenses).forEach(x=>{
+    const d=(x.date||'').slice(0,10);
+    if(d>=from&&d<=to) out.push({kind:'out',date:x.date,amount:num(x.amount),method:x.method||'',concept:x.concept,who:'',eid:x.id});
+  });
+  return out.sort((a,b)=>b.date.localeCompare(a.date));
+}
+function presetRange(p){
+  const t=new Date(), to=dayStr(t); let f=to;
+  if(p==='semana'){ const d=new Date(t); d.setDate(d.getDate()-6); f=dayStr(d); }
+  if(p==='mes') f=to.slice(0,8)+'01';
+  if(p==='todo') f='2000-01-01';
+  return [f,to];
+}
+V.diario=()=>{
+  const {from,to,preset}=UI.dr; const ent=ledger(from,to);
+  const inn=sum(ent.filter(e=>e.kind==='in').map(e=>e.amount)), out=sum(ent.filter(e=>e.kind==='out').map(e=>e.amount));
+  let day='', rows='';
+  ent.forEach(e=>{
+    const d=e.date.slice(0,10);
+    if(d!==day){ day=d; rows+=`<div class="daytitle">${esc(fDateLong(d))}</div>`; }
+    const isIn=e.kind==='in';
+    rows+=`<button class="row" data-act="${isIn?'pay':'exp'}" data-id="${isIn?e.pid:e.eid}" style="padding-left:20px;padding-right:20px">
+      <span class="main"><span class="t">${esc(e.concept||'Sin concepto')}</span><span class="s">${esc(fTime(e.date))}${e.who?' · '+esc(e.who):''}${e.method?' · '+esc(e.method):''}</span></span>
+      <span class="v ${isIn?'in':'out'}">${isIn?'+':'−'} ${eur(e.amount)}</span></button>`;
+  });
+  const P=(id,l)=>`<button class="chip ${preset===id?'on':''}" data-act="dr" data-p="${id}">${l}</button>`;
+  return `<div class="top"><h1>Libro diario</h1><button class="ibtn" data-act="xls" aria-label="Exportar a Excel">${I('sheet')}</button></div>
+  <div class="pad chips" style="padding-bottom:10px">${P('hoy','Hoy')}${P('semana','7 días')}${P('mes','Este mes')}${P('todo','Todo')}</div>
+  <div class="dates"><label class="field" style="margin:0"><span>Desde</span><input class="inp" type="date" value="${from}" data-ch="drdate" data-w="from"></label><label class="field" style="margin:0"><span>Hasta</span><input class="inp" type="date" value="${to}" data-ch="drdate" data-w="to"></label></div>
+  <div class="sum3"><div><span>Ingresos</span><b style="color:var(--ok)">${eur(inn)}</b></div><div><span>Egresos</span><b style="color:var(--bad)">${eur(out)}</b></div><div><span>Balance</span><b>${eur(inn-out)}</b></div></div>
+  <div class="pad" style="padding-top:12px"><button class="btn ghost block" data-act="exp-new">${I('plus')} Registrar gasto</button></div>
+  ${ent.length?`<div>${rows}</div>`:`<div class="empty"><p>No hay movimientos en estas fechas.</p></div>`}`;
+};
+A.dr=d=>{ const [f,t]=presetRange(d.p); UI.dr={preset:d.p,from:f,to:t}; render(true); };
+C.drdate=t=>{ if(!t.value) return; UI.dr[t.dataset.w]=t.value; UI.dr.preset='custom'; if(UI.dr.from>UI.dr.to){ const x=UI.dr.from; UI.dr.from=UI.dr.to; UI.dr.to=x; } render(true); };
+let EX={};
+function expenseForm(x){
+  const sh=openSheet(`${shHead(x?'Editar gasto':'Nuevo gasto')}<div class="sheet-body">
+    <label class="field"><span>Concepto</span><input class="inp" id="ex-c" autocomplete="off" value="${esc(x?x.concept:'')}" placeholder="Ej.: Compra de harina y huevos"></label>
+    <label class="field"><span>Monto ($)</span><input class="inp" id="ex-a" inputmode="decimal" value="${x?String(x.amount).replace('.',','):''}" placeholder="0,00"></label>
+    <label class="field"><span>Fecha y hora</span><input class="inp" id="ex-d" type="datetime-local" value="${esc(x?x.date:nowLocal())}"></label>
+    <div class="field"><span>Método</span><div class="chips" id="ex-m"></div></div></div>
+    <div class="sheet-foot">${x?`<button class="btn danger" data-act="ex-del" style="flex:0 0 auto" aria-label="Eliminar">${I('trash')}</button>`:''}<button class="btn" data-act="ex-save">Guardar</button></div>`);
+  EX={id:x&&x.id,sh,method:x?x.method||'Efectivo $':'Efectivo $'}; exDraw();
+}
+function exDraw(){ $('#ex-m',EX.sh).innerHTML=METHODS.map(m=>`<button class="chip ${EX.method===m?'on':''}" data-act="ex-mm" data-m="${m}">${m}</button>`).join(''); }
+A['ex-mm']=d=>{ EX.method=d.m; exDraw(); };
+A['exp-new']=()=>expenseForm(null);
+A.exp=d=>expenseForm(S.expenses[d.id]);
+A['ex-save']=async()=>{
+  const c=$('#ex-c',EX.sh).value.trim(), a=num($('#ex-a',EX.sh).value), d=$('#ex-d',EX.sh).value||nowLocal();
+  if(!c||!(a>0)){ toast('Escribe el concepto y el monto'); return; }
+  const o=EX.id?{...S.expenses[EX.id]}:{id:uid(),createdAt:Date.now()};
+  Object.assign(o,{concept:c,amount:r2(a),date:d,method:EX.method}); put('expenses',o);
+  buzz(); await closeSheet(); toast('Gasto guardado'); softRender();
+};
+A['ex-del']=async()=>{ if(await ask('Eliminar gasto','Dejará de aparecer en el libro diario.','Eliminar',true)){ del('expenses',EX.id); await closeSheet(); toast('Gasto eliminado'); softRender(); } };
+
+/* ---------- Exportar a Excel ---------- */
+A.xls=()=>exportExcel(UI.dr.from,UI.dr.to);
+async function exportExcel(from,to){
+  const ent=ledger(from,to).reverse();
+  const diario=[['Fecha','Hora','Tipo','Concepto','Cliente','Método','Ingreso ($)','Egreso ($)']];
+  ent.forEach(e=>diario.push([e.date.slice(0,10),fTime(e.date),e.kind==='in'?'Ingreso':'Egreso',e.concept||'',e.who||'',e.method||'',e.kind==='in'?e.amount:'',e.kind==='out'?e.amount:'']));
+  const inn=sum(ent.filter(e=>e.kind==='in').map(e=>e.amount)), out=sum(ent.filter(e=>e.kind==='out').map(e=>e.amount));
+  diario.push([],['','','','','','Totales',inn,out],['','','','','','Balance',r2(inn-out)]);
+  const pagos=[['Fecha','Recibo','Cliente','Productos y encargos','Total ($)','Pagado ($)','Saldo ($)']];
+  Object.values(S.payments).filter(p=>p.date.slice(0,10)>=from&&p.date.slice(0,10)<=to).sort((a,b)=>a.date.localeCompare(b.date))
+    .forEach(p=>pagos.push([p.date.replace('T',' '),invNum(p),p.clientName,conceptOf(p),p.total,paidOf(p),saldoOf(p)]));
+  const cli=[['Cliente','Teléfono','Compras','Total pagado ($)']];
+  Object.values(S.clients).sort(byName).forEach(c=>{ const v=visitsOf(c.id); cli.push([c.name,c.phone||'',v.length,sum(v.map(paidOf))]); });
+  const inv=[['Producto','Categoría','Precio ($)','Existencia']]; Object.values(S.products).sort(byName).forEach(p=>inv.push([p.name,catName(p.cat),p.price,num(p.stock)]));
+  const name=`DulcesMJ-diario-${from}_a_${to}`;
+  toast('Preparando Excel…');
+  try{
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+    const wb=XLSX.utils.book_new();
+    const add=(rows,n,w)=>{ const ws=XLSX.utils.aoa_to_sheet(rows); ws['!cols']=w.map(x=>({wch:x})); XLSX.utils.book_append_sheet(wb,ws,n); };
+    add(diario,'Libro diario',[12,10,10,38,22,16,13,13]); add(pagos,'Cobros',[18,9,22,44,11,11,11]); add(cli,'Clientes',[26,18,9,16]); add(inv,'Inventario',[30,14,11,11]);
+    XLSX.writeFile(wb,name+'.xlsx'); toast('Excel descargado');
+  }catch(e){
+    const csv='\ufeff'+diario.map(r=>r.map(v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+    saveBlob(new Blob([csv],{type:'text/csv;charset=utf-8'}),name+'.csv'); toast('Sin internet para Excel: descargué un CSV que también abre en Excel');
+  }
+}
+
+/* ---------- Ajustes ---------- */
+const isStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+const fld=(label,key,kind)=>kind==='area'
+  ?`<label class="field"><span>${label}</span><textarea class="inp" data-ch="set" data-k="${key}">${esc(S.settings[key])}</textarea></label>`
+  :`<label class="field"><span>${label}</span><input class="inp" ${kind==='tel'?'type="tel" inputmode="tel"':''} value="${esc(S.settings[key])}" data-ch="set" data-k="${key}" autocomplete="off"></label>`;
+V.ajustes=()=>{
+  const s=S.settings; const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const cfg=localStorage.getItem('dulcesmj.fbcfg')||'';
+  return `<div class="top"><button class="ibtn" data-act="back" aria-label="Volver">${I('back')}</button><h1>Ajustes</h1></div><div class="pad">
+  <div class="set-sec"><h3 style="margin-top:6px">Tienda</h3>${fld('Nombre de la tienda','salonName')}${fld('Dirección (sale en la factura)','address','area')}${fld('Código de país para WhatsApp','cc','tel')}</div>
+  <div class="set-sec"><h3>Pago Móvil</h3><p class="hint">Aparece en la factura cuando queda un saldo por pagar.</p>${fld('Banco','pmBank')}${fld('Teléfono','pmPhone','tel')}${fld('Cédula o RIF','pmId')}${fld('Titular','pmHolder')}</div>
+  <div class="set-sec"><h3>Dólares y USDT</h3><p class="hint">Se muestra junto a Pago Móvil en la factura cuando queda un saldo por pagar.</p>${fld('Binance ID (USDT)','binanceId')}${fld('Nota de pago','payNote','area')}</div>
+  <div class="set-sec"><h3>Tasa BCV</h3>
+    <div class="seg in"><button class="${s.rateAuto?'on':''}" data-act="rate-mode" data-m="1">Automática</button><button class="${s.rateAuto?'':'on'}" data-act="rate-mode" data-m="0">Manual</button></div>
+    <label class="field"><span>$1 = Bs</span><input class="inp" inputmode="decimal" value="${s.rate?String(s.rate).replace('.',','):''}" data-ch="set-rate" placeholder="0,00"></label>
+    <button class="btn ghost block" data-act="rate-now">Buscar la tasa de hoy</button>
+    <p class="hint" style="margin-top:8px">${s.rateDate?'Última actualización: '+esc(s.rateDate):'Aún sin tasa guardada.'}</p></div>
+  <div class="set-sec"><h3>Sincronizar celulares</h3><div id="syncbox">${syncHTML()}</div>
+    <label class="field"><span>Configuración de Firebase</span><textarea class="inp" id="fbcfg" style="min-height:110px;font-size:13px" placeholder='Pega aquí el firebaseConfig de tu proyecto'>${esc(cfg)}</textarea></label>
+    <div class="two"><button class="btn" data-act="cloud-save">Conectar</button><button class="btn ghost" data-act="cloud-off">Desconectar</button></div></div>
+  <div class="set-sec"><h3>Tus datos</h3><div class="stack">
+    <button class="btn ghost" data-act="backup">${I('down')} Descargar copia de seguridad</button>
+    <button class="btn ghost" data-act="restore">Restaurar copia de seguridad</button>
+    <button class="btn ghost" data-act="xls-all">${I('sheet')} Exportar todo a Excel</button></div></div>
+  <div class="set-sec"><h3>Instalar la app</h3>${isStandalone()?'<p class="muted">Ya la estás usando como app.</p>':(deferredInstall?'<button class="btn block" data-act="install">Instalar Dulces M &amp; J en este teléfono</button>':(ios?'<p class="muted">En Safari toca Compartir y luego “Agregar a pantalla de inicio”.</p>':'<p class="muted">Abre el menú del navegador y elige “Instalar app” o “Agregar a pantalla de inicio”.</p>'))}</div>
+  <p class="muted small" style="text-align:center;padding:10px 0 4px">Dulces M &amp; J · versión 1.0</p></div>`;
+};
+C.set=t=>{ const k=t.dataset.k; let v=t.value.trim(); if(k==='cc') v=digits(v)||'58'; S.settings[k]=v; saveSettings(); toast('Guardado'); };
+C['set-rate']=t=>{ S.settings.rate=num(t.value); S.settings.rateDate=todayStr(); S.settings.rateAuto=false; saveSettings(); toast('Tasa guardada'); render(true); };
+A['rate-mode']=d=>{ S.settings.rateAuto=d.m==='1'; saveSettings(); render(true); if(S.settings.rateAuto){ S.settings.rateDate=''; autoRate(); } };
+A['rate-now']=async()=>{ toast('Buscando tasa…'); const v=await fetchRate(); if(v){ S.settings.rate=v; S.settings.rateDate=todayStr(); saveSettings(); render(true); toast('Tasa: '+bsf(v)); } else toast('No pude obtenerla. Escríbela a mano.'); };
+A['xls-all']=()=>exportExcel('2000-01-01',todayStr());
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; if(UI.tab==='ajustes') render(true); });
+A.install=async()=>{ if(!deferredInstall) return; deferredInstall.prompt(); await deferredInstall.userChoice; deferredInstall=null; render(true); };
+A.backup=()=>{
+  const blob=new Blob([JSON.stringify({app:'dulcesmj',version:1,exportedAt:new Date().toISOString(),data:S})],{type:'application/json'});
+  saveBlob(blob,`DulcesMJ-copia-${todayStr()}.json`); toast('Copia descargada');
+};
+A.restore=()=>$('#restore').click();
+$('#restore').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  let j; try{ j=JSON.parse(await f.text()); }catch(err){ toast('Ese archivo no es una copia válida'); return; }
+  const d=j&&j.data; if(!d||!COLS.every(c=>typeof d[c]==='object')){ toast('Ese archivo no es una copia de Dulces M & J'); return; }
+  if(!(await ask('Restaurar copia','Se reemplazarán los datos actuales por los de la copia.','Restaurar',true))) return;
+  const prev=S; S={settings:Object.assign({},DEF,d.settings||{})}; COLS.forEach(c=>S[c]=d[c]||{}); save();
+  if(Cloud.db){ COLS.forEach(c=>{ Object.keys(prev[c]).forEach(id=>{ if(!S[c][id]) cloudDel(c,id); }); Object.values(S[c]).forEach(o=>cloudSet(c,o)); }); cloudSettings(); }
+  toast('Copia restaurada'); render();
+});
+
+/* ---------- Factura (imagen) ---------- */
+function loadImg(src){ return new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
+function wrapText(x,text,maxW){
+  const words=String(text).split(/\s+/), lines=[]; let cur='';
+  words.forEach(w=>{ const t=cur?cur+' '+w:w; if(x.measureText(t).width>maxW&&cur){ lines.push(cur); cur=w; } else cur=t; });
+  if(cur) lines.push(cur); return lines;
+}
+function rrect(x,px,py,w,h,r){ x.beginPath(); x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); }
+async function drawInvoice(p){
+  try{ await Promise.all([document.fonts.load('600 40px "Fredoka"'),document.fonts.load('700 40px "Fredoka"'),document.fonts.load('400 40px "Pacifico"'),document.fonts.load('400 30px "Nunito"'),document.fonts.load('600 30px "Nunito"'),document.fonts.load('700 30px "Nunito"')]); }catch(e){}
+  const img=await loadImg('logo.webp'); const s0=S.settings;
+  const W=1080,P=76,H=4400; const cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');
+  const FD='"Fredoka","Nunito",system-ui,sans-serif', FB='"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif', FS='"Pacifico","Fredoka",cursive';
+  const INK='#3b2218', INK2='#6e5148', MUTE='#a08a82', BROWN='#7a4a35', OK='#1c7f55';
+  const holo=(x0,y0,x1,y1,soft)=>{ const g=x.createLinearGradient(x0,y0,x1,y1); (soft?[[0,'#ffd9ec'],[.4,'#ffc7e3'],[.7,'#d9f7f8'],[1,'#f9e7d2']]:[[0,'#f58cc4'],[.4,'#f5a9d8'],[.7,'#c9f1f5'],[1,'#e6b98a']]).forEach(([o,c])=>g.addColorStop(o,c)); return g; };
+  const T=(t,px,py,font,color,al='left')=>{ x.font=font; x.fillStyle=color; x.textAlign=al; x.textBaseline='alphabetic'; x.fillText(t,px,py); };
+  const line=(py)=>{ x.fillStyle='#f7d9ea'; x.fillRect(P,py,W-2*P,2); };
+  const r=p.rate||rate(); const s=saldoOf(p), paid=paidOf(p), ab=p.abonos||[];
+  x.fillStyle='#fff9fc'; x.fillRect(0,0,W,H);
+  const bh=450; x.fillStyle=holo(0,0,W,bh,true); x.fillRect(0,0,W,bh);
+  [[90,80,-.5,'#f58cc4'],[200,340,.6,BROWN],[960,90,.4,BROWN],[880,350,-.7,'#f58cc4'],[140,200,.2,'#fff'],[930,215,-.3,'#fff'],[330,60,.9,'#c9f1f5'],[760,395,.5,'#c9f1f5'],[60,385,-.4,'#e6b98a'],[1020,395,.3,'#e6b98a'],[790,50,-.2,'#fff'],[290,405,.1,'#fff']]
+    .forEach(([a,b,rot,c])=>{ x.save(); x.translate(a,b); x.rotate(rot); x.fillStyle=c; rrect(x,-24,-8,48,16,8); x.fill(); x.restore(); });
+  const d=320,cx=W/2,cy=bh/2;
+  x.save(); x.shadowColor='rgba(150,60,110,.32)'; x.shadowBlur=44; x.shadowOffsetY=14; x.fillStyle='#fff'; x.beginPath(); x.arc(cx,cy,d/2,0,Math.PI*2); x.fill(); x.restore();
+  x.save(); x.beginPath(); x.arc(cx,cy,d/2,0,Math.PI*2); x.clip(); x.drawImage(img,cx-d/2,cy-d/2,d,d); x.restore();
+  let y=bh+96;
+  T('Recibo',W/2,y,`600 72px ${FD}`,INK,'center'); y+=48;
+  T('N.º '+invNum(p),W/2,y,`400 28px ${FB}`,MUTE,'center'); y+=70;
+  if(s){
+    x.font=`600 30px ${FB}`; const label='Pedido apartado', tw=x.measureText(label).width+90;
+    x.fillStyle=holo(W/2-tw/2,0,W/2+tw/2,0,false); rrect(x,W/2-tw/2,y-44,tw,68,34); x.fill();
+    T(label,W/2,y+2,`600 30px ${FB}`,INK,'center'); y+=76;
+  }else{ T('Fecha y hora del pedido',W/2,y,`400 28px ${FB}`,MUTE,'center'); y+=56; }
+  T(fDateLong(p.date),W/2,y,`600 44px ${FD}`,INK,'center'); y+=54;
+  T(fTime(p.date),W/2,y,`500 34px ${FB}`,INK2,'center'); y+=84;
+  line(y-30);
+  T('Cliente',P,y+8,`400 26px ${FB}`,MUTE); y+=64;
+  T(p.clientName,P,y,`600 52px ${FD}`,INK); y+=56;
+  line(y); y+=62;
+  p.items.forEach(it=>{
+    x.font=`600 32px ${FB}`; const lines=wrapText(x,it.name,W-2*P-260);
+    lines.forEach((l,i)=>T(l,P,y+i*42,`600 32px ${FB}`,INK));
+    T(eur(num(it.price)*it.qty),W-P,y,`700 32px ${FB}`,INK,'right');
+    let hh=(lines.length-1)*42;
+    if(it.qty>1){ hh+=38; T(`${it.qty} × ${eur(it.price)}`,P,y+hh,`400 25px ${FB}`,MUTE); }
+    y+=hh+56;
+  });
+  line(y-20); y+=74;
+  const deduct=ab.length>0&&!(ab.length===1&&!s);
+  if(!deduct){
+    T('Total',P,y,`600 36px ${FB}`,INK); T(eur(p.total),W-P,y+8,`600 80px ${FD}`,INK,'right'); y+=56;
+    if(r){ T(`${bsf(p.total*r)}  ·  tasa BCV Bs ${nf.format(r)}`,W-P,y,`400 27px ${FB}`,INK2,'right'); y+=30; }
+    y+=34;
+  }else{
+    T('Total del pedido',P,y,`600 34px ${FB}`,INK); T(eur(p.total),W-P,y+4,`600 44px ${FD}`,INK,'right'); y+=44;
+    if(r){ T(`${bsf(p.total*r)}  ·  tasa BCV Bs ${nf.format(r)}`,W-P,y,`400 26px ${FB}`,INK2,'right'); y+=22; }
+    y+=36;
+    ab.forEach(a=>{
+      T(`Abono · ${fShort(a.date)}${a.method?' · '+a.method:''}`,P,y,`500 29px ${FB}`,INK2);
+      T('− '+eur(a.amount),W-P,y+2,`600 38px ${FD}`,OK,'right'); y+=58;
+    });
+    y+=2; line(y); y+=58;
+  }
+  if(s>0){
+    x.fillStyle=holo(P,0,W-P,0,true); rrect(x,P,y,W-2*P,112,32); x.fill();
+    T('Resta por pagar',P+34,y+68,`600 34px ${FB}`,INK); T(eur(s),W-P-34,y+74,`600 54px ${FD}`,INK,'right'); y+=112;
+    if(r){ y+=38; T(`${bsf(s*r)}  ·  tasa BCV Bs ${nf.format(r)}`,W-P,y,`400 26px ${FB}`,INK2,'right'); }
+    y+=50;
+    if(s0.pmPhone||s0.pmId||s0.binanceId){
+      const rows=[]; if(s0.pmBank) rows.push(['Banco',s0.pmBank]); if(s0.pmPhone) rows.push(['Teléfono',s0.pmPhone]); if(s0.pmId) rows.push(['Cédula / RIF',s0.pmId]); if(s0.pmHolder) rows.push(['Titular',s0.pmHolder]);
+      if(s0.binanceId) rows.push(['USDT · Binance ID',s0.binanceId]);
+      x.font=`italic 400 26px ${FB}`; const nl=s0.payNote?wrapText(x,s0.payNote,W-2*P-72):[];
+      const noteH=nl.length?nl.length*36+26:0;
+      const bh2=110+rows.length*52+noteH+150;
+      x.fillStyle='#fff0f8'; rrect(x,P,y,W-2*P,bh2,32); x.fill(); x.strokeStyle='#f7d9ea'; x.lineWidth=2; x.stroke();
+      T('Datos de Pago Móvil',P+36,y+70,`600 38px ${FD}`,INK);
+      rows.forEach((rw,i)=>{ T(rw[0],P+36,y+128+i*52,`400 27px ${FB}`,MUTE); T(rw[1],W-P-36,y+128+i*52,`700 29px ${FB}`,INK,'right'); });
+      const ny=y+110+rows.length*52;
+      nl.forEach((l,i)=>T(l,P+36,ny+30+i*36,`italic 400 26px ${FB}`,INK2));
+      const ay=ny+noteH+44;
+      x.fillStyle='#fff'; rrect(x,P+24,ay-20,W-2*P-48,88,24); x.fill();
+      T('Monto a pagar',P+50,ay+38,`600 30px ${FB}`,INK); T(r?bsf(s*r):eur(s),W-P-50,ay+44,`600 40px ${FD}`,INK,'right');
+      y+=bh2+40;
+    }
+  }else{
+    x.font=`700 32px ${FB}`; const lab='Pagado en su totalidad', lw=x.measureText(lab).width, w=lw+150;
+    x.fillStyle='#dff5ea'; rrect(x,W/2-w/2,y,w,84,42); x.fill();
+    const sx=W/2-w/2+52; x.strokeStyle=OK; x.lineWidth=7; x.lineCap='round'; x.lineJoin='round'; x.beginPath(); x.moveTo(sx,y+44); x.lineTo(sx+18,y+62); x.lineTo(sx+48,y+26); x.stroke();
+    T(lab,sx+72,y+55,`700 32px ${FB}`,OK,'left'); y+=84+50;
+  }
+  if(p.note){ x.font=`400 28px ${FB}`; wrapText(x,p.note,W-2*P).forEach((l,i)=>{ T(l,P,y+i*38,`400 28px ${FB}`,INK2); y+=38; }); y+=24; }
+  y+=20; line(y); y+=96;
+  T(s0.salonName,W/2,y,`400 54px ${FS}`,BROWN,'center'); y+=20;
+  x.font=`400 27px ${FB}`; wrapText(x,s0.address,W-2*P-40).forEach(l=>{ y+=42; T(l,W/2,y,`400 27px ${FB}`,INK2,'center'); });
+  y+=64; T('Gracias por tu compra',W/2,y,`400 32px ${FS}`,MUTE,'center'); y+=70;
+  x.fillStyle=holo(0,0,W,0,false); x.fillRect(0,y,W,18); y+=18;
+  const out=document.createElement('canvas'); out.width=W; out.height=y; out.getContext('2d').drawImage(cv,0,0,W,y,0,0,W,y);
+  return out;
+}
+function invText(p){
+  const s0=S.settings, s=saldoOf(p), r=p.rate||rate(), ab=p.abonos||[];
+  let t=`*${s0.salonName}*\nRecibo N.º ${invNum(p)}\n${p.clientName}\n${s?'Pedido apartado: ':''}${fDT(p.date)}\n\n`;
+  p.items.forEach(i=>{ t+=`• ${i.name}${i.qty>1?` ×${i.qty}`:''}: ${eur(num(i.price)*i.qty)}\n`; });
+  t+=`\n*Total: ${eur(p.total)}*${r?` (${bsf(p.total*r)})`:''}`;
+  if(ab.length&&!(ab.length===1&&!s)) ab.forEach(a=>{ t+=`\nAbono ${fShort(a.date)}: − ${eur(a.amount)}`; });
+  if(s){ t+=`\n*Resta por pagar: ${eur(s)}*${r?` (${bsf(s*r)})`:''}`; if(s0.pmPhone||s0.pmId||s0.binanceId) t+='\n\n'+pmText(s,r); } else t+='\nPagado ✅';
+  return t+`\n\n${s0.address}`;
+}
+function pmText(s,r){
+  const s0=S.settings; let t=`Pago Móvil${s0.pmBank?' · '+s0.pmBank:''}`;
+  if(s0.pmPhone) t+=`\nTeléfono: ${s0.pmPhone}`; if(s0.pmId) t+=`\nCédula/RIF: ${s0.pmId}`; if(s0.pmHolder) t+=`\nTitular: ${s0.pmHolder}`;
+  if(s>0) t+=`\nMonto: ${r?bsf(s*r):eur(s)}`;
+  if(s0.binanceId) t+=`\nUSDT (Binance ID): ${s0.binanceId}`;
+  if(s0.payNote) t+=`\n${s0.payNote}`;
+  return t;
+}
+function invoiceInner(p){
+  const s0=S.settings, s=saldoOf(p), has=s0.pmPhone||s0.pmId||s0.binanceId, todayR=rate();
+  return `${shHead('Factura')}<div class="sheet-body"><div id="inv-box" style="min-height:240px"></div>
+    ${todayR&&(p.rate||0)!==todayR?`<p class="hint" style="margin-top:10px">Esta factura usa la tasa de Bs ${nf.format(p.rate||0)}. <button data-act="inv-rate" data-id="${p.id}" style="text-decoration:underline;font-weight:600">Usar la de hoy</button></p>`:''}</div>
+    <div class="sheet-foot" style="flex-wrap:wrap"><button class="btn" style="flex:1 1 100%" data-act="inv-send" data-id="${p.id}">${I('wa')} Enviar por WhatsApp</button>
+    <button class="btn soft" data-act="inv-txt" data-id="${p.id}">Solo texto</button><button class="btn soft" data-act="inv-dl" data-id="${p.id}">Guardar imagen</button>
+    ${has?`<button class="btn ghost" style="flex:1 1 100%" data-act="inv-copy" data-id="${p.id}">${I('copy')} Copiar datos de Pago Móvil</button>`:''}</div>`;
+}
+async function paintInvoice(sh,p){
+  const box=$('#inv-box',sh); if(!box) return;
+  try{ const cv=await drawInvoice(p); cv.className='inv'; box.innerHTML=''; box.appendChild(cv); box.style.minHeight=''; }
+  catch(e){ box.innerHTML='<p class="muted">No pude dibujar la factura.</p>'; }
+}
+function showInvoice(sh,p){ setSheet(sh,invoiceInner(p)); paintInvoice(sh,p); }
+function openInvoice(id){ const p=S.payments[id]; if(!p) return; const sh=openSheet(invoiceInner(p),{tall:true}); paintInvoice(sh,p); }
+async function invBlob(p){ const cv=await drawInvoice(p); return new Promise(r=>cv.toBlob(r,'image/png')); }
+A['inv-rate']=d=>{ const p=S.payments[d.id]; put('payments',{...p,rate:rate()}); const e=SH[SH.length-1]; if(e){ setSheet(e.sh,invoiceInner(S.payments[d.id])); paintInvoice(e.sh,S.payments[d.id]); } };
+A['inv-send']=async d=>{
+  const p=S.payments[d.id]; const blob=await invBlob(p); const file=new File([blob],`DulcesMJ-recibo-${invNum(p)}.png`,{type:'image/png'});
+  const c=S.clients[p.clientId];
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{ await navigator.share({files:[file],text:invText(p)}); return; }catch(e){ if(e&&e.name==='AbortError') return; }
+  }
+  saveBlob(blob,file.name); toast('Imagen guardada: adjúntala en el chat de WhatsApp');
+  setTimeout(()=>window.open(waLink(c&&c.phone,invText(p)),'_blank'),700);
+};
+A['inv-txt']=d=>{ const p=S.payments[d.id], c=S.clients[p.clientId]; window.open(waLink(c&&c.phone,invText(p)),'_blank'); };
+A['inv-dl']=async d=>{ const p=S.payments[d.id]; saveBlob(await invBlob(p),`DulcesMJ-recibo-${invNum(p)}.png`); toast('Imagen guardada'); };
+A['inv-copy']=async d=>{ const p=S.payments[d.id]; const t=pmText(saldoOf(p),p.rate||rate());
+  try{ await navigator.clipboard.writeText(t); }catch(e){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); try{document.execCommand('copy')}catch(_){} a.remove(); }
+  buzz(); toast('Datos copiados'); };
+
+/* ---------- Sincronización en tiempo real (Firebase) ---------- */
+const Cloud={db:null,auth:null,user:null,status:'off',err:'',unsubs:[]};
+function parseCfg(t){
+  if(!t) return null; const o={}; String(t).replace(/["']?(\w+)["']?\s*:\s*["']([^"']*)["']/g,(m,k,v)=>{ o[k]=v; return m; });
+  return o.apiKey&&o.projectId?o:null;
+}
+const getFbCfg=()=>FIREBASE_CONFIG||parseCfg(localStorage.getItem('dulcesmj.fbcfg'));
+function syncHTML(){
+  const map={off:['','Sin conectar. Cada teléfono guarda sus datos por separado.'],connecting:['warn','Conectando…'],ok:['ok','Sincronizado en tiempo real'],
+    offline:['warn','Sin internet: se sincronizará al volver'],auth:['bad','Inicia sesión para leer y guardar los datos'],error:['bad','Error: '+Cloud.err]};
+  const [c,t]=map[Cloud.status]||map.off;
+  return `<div class="sync"><span class="dot ${c}"></span><span>${esc(t)}</span></div>
+    ${Cloud.status==='auth'?`<button class="btn block" style="margin-bottom:12px" data-act="cloud-login">Entrar con Google</button>`:''}
+    ${Cloud.db&&Cloud.status==='ok'?`<button class="btn soft block" style="margin-bottom:12px" data-act="cloud-push">Subir los datos de este teléfono</button>`:''}`;
+}
+function setSync(st,err){ Cloud.status=st; Cloud.err=err||''; if(UI.tab==='ajustes'){ const b=$('#syncbox'); if(b) b.innerHTML=syncHTML(); } }
+function cloudErr(e){
+  const code=(e&&e.code)||''; if(code==='permission-denied') setSync(Cloud.user?'error':'auth',Cloud.user?'sin permiso, revisa las reglas de Firestore':'');
+  else if(code==='unavailable') setSync('offline'); else setSync('error',(e&&e.message)||'desconocido');
+}
+function cloudSet(col,o){ if(Cloud.db) Cloud.db.collection(col).doc(o.id).set(clean(o)).catch(cloudErr); }
+function cloudDel(col,id){ if(Cloud.db) Cloud.db.collection(col).doc(id).delete().catch(cloudErr); }
+function cloudSettings(){ if(Cloud.db) Cloud.db.collection('meta').doc('settings').set(clean(S.settings)).catch(cloudErr); }
+async function cloudInit(){
+  const cfg=getFbCfg(); if(!cfg){ setSync('off'); return; }
+  if(!navigator.onLine&&!window.firebase){ setSync('offline'); return; }
+  try{
+    setSync('connecting');
+    const B='https://www.gstatic.com/firebasejs/10.12.5/';
+    await loadScript(B+'firebase-app-compat.js');
+    await Promise.all([loadScript(B+'firebase-firestore-compat.js'),loadScript(B+'firebase-auth-compat.js')]);
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    Cloud.db=firebase.firestore(); Cloud.auth=firebase.auth();
+    try{ await Cloud.db.enablePersistence({synchronizeTabs:true}); }catch(e){}
+    Cloud.auth.onAuthStateChanged(u=>{ Cloud.user=u; if(!u) Cloud.auth.signInAnonymously().catch(cloudErr); else cloudAttach(); });
+  }catch(e){ setSync(navigator.onLine?'error':'offline',e.message); }
+}
+function cloudDetach(){ Cloud.unsubs.forEach(u=>{ try{u()}catch(e){} }); Cloud.unsubs=[]; }
+function cloudAttach(){
+  cloudDetach();
+  COLS.forEach(col=>{
+    Cloud.unsubs.push(Cloud.db.collection(col).onSnapshot(snap=>{
+      const key='dulcesmj.seed.'+col, seeded=!!localStorage.getItem(key), cache=snap.metadata.fromCache;
+      if(cache&&(!seeded||snap.empty)) return;
+      const m={}; snap.forEach(d=>{ m[d.id]=d.data(); });
+      if(!seeded&&!cache){ Object.values(S[col]).forEach(o=>{ if(!m[o.id]){ m[o.id]=o; cloudSet(col,o); } }); localStorage.setItem(key,'1'); }
+      S[col]=m; save(); setSync(cache?'offline':'ok'); softRender();
+    },cloudErr));
+  });
+  Cloud.unsubs.push(Cloud.db.collection('meta').doc('settings').onSnapshot(doc=>{
+    const cache=doc.metadata.fromCache; if(cache&&!doc.exists) return;
+    if(doc.exists){ S.settings=Object.assign({},DEF,doc.data()); save(); softRender(); }
+    else if(!cache) cloudSettings();
+  },cloudErr));
+}
+A['cloud-save']=()=>{
+  const cfg=parseCfg($('#fbcfg').value); if(!cfg){ toast('No encontré apiKey y projectId en lo que pegaste'); return; }
+  localStorage.setItem('dulcesmj.fbcfg',$('#fbcfg').value.trim()); toast('Conectando…'); setTimeout(()=>location.reload(),600);
+};
+A['cloud-off']=async()=>{
+  if(await ask('Desconectar','Este teléfono dejará de sincronizar. Sus datos se conservan.','Desconectar')){
+    localStorage.removeItem('dulcesmj.fbcfg'); COLS.forEach(c=>localStorage.removeItem('dulcesmj.seed.'+c)); location.reload();
+  }
+};
+A['cloud-login']=async()=>{
+  const pr=new firebase.auth.GoogleAuthProvider();
+  try{ await Cloud.auth.signInWithPopup(pr); }catch(e){ try{ await Cloud.auth.signInWithRedirect(pr); }catch(er){ toast('No se pudo iniciar sesión'); } }
+};
+A['cloud-push']=()=>{ COLS.forEach(c=>Object.values(S[c]).forEach(o=>cloudSet(c,o))); cloudSettings(); toast('Datos subidos a la nube'); };
+
+/* ---------- Arranque ---------- */
+function netBanner(){ $('#offline').hidden=navigator.onLine; }
+window.addEventListener('online',()=>{ netBanner(); autoRate(); if(!Cloud.db&&getFbCfg()) cloudInit(); });
+window.addEventListener('offline',netBanner);
+document.addEventListener('contextmenu',e=>{ if(!e.target.closest('input,textarea')) e.preventDefault(); });
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+history.replaceState({s:0},'');
+renderBar(); render(); netBanner();
+setTimeout(()=>{ const s=$('#splash'); s.classList.add('off'); setTimeout(()=>s.remove(),400); },450);
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(()=>{});
+cloudInit(); autoRate();
+</script>
+</body>
+</html>
