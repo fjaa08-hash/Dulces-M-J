@@ -487,6 +487,10 @@
   .tab{ font-size:12px; }
   .stat b{ letter-spacing:-.01em; }
 </style>
+<script>
+window.__dmjInstall=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__dmjInstall=e;try{window.dispatchEvent(new Event('dmj-install-ready'));}catch(_){}});
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -2630,7 +2634,8 @@ function getFirebaseAuthInstance(){
   $('saveClientBtn').addEventListener('click', saveClient);
 
   // Elegir cliente desde los contactos del celular (solo Chrome/Android por ahora)
-  const contactsSupported = ('contacts' in navigator) && ('ContactsManager' in window);
+  const contactsSupported = !!(navigator.contacts && typeof navigator.contacts.select === 'function');
+  const showVcfFallback = () => { $('vcfLabel').style.display = 'block'; $('vcfHelper').style.display = 'block'; };
   if (contactsSupported){
     $('pickContactBtn').style.display = 'block';
     $('pickContactHelper').style.display = 'block';
@@ -2639,16 +2644,24 @@ function getFirebaseAuthInstance(){
         const results = await navigator.contacts.select(['name', 'tel'], { multiple: false });
         if (results && results.length){
           const c = results[0];
-          if (c.name && c.name[0]) $('newName').value = c.name[0];
-          if (c.tel && c.tel[0]) $('newPhone').value = c.tel[0];
+          const nm = (c.name && c.name[0]) ? String(c.name[0]).trim() : '';
+          const tl = (c.tel && c.tel[0]) ? String(c.tel[0]).replace(/[^\d+]/g, '') : '';
+          if (nm) $('newName').value = nm;
+          if (tl) $('newPhone').value = tl;
+          if (!nm && !tl) showToast('Ese contacto no tiene nombre ni teléfono');
+          else if (!tl) showToast('Ese contacto no tiene teléfono');
         }
       }catch(e){
-        // el usuario canceló el selector, no hacemos nada
+        if (e && e.name === 'AbortError') return; // canceló
+        console.warn('Contactos', e);
+        showToast('No se pudo abrir tus contactos. Usa el archivo .vcf o escríbelo a mano.');
+        showVcfFallback();
       }
     });
   } else {
-    $('vcfLabel').style.display = 'block';
-    $('vcfHelper').style.display = 'block';
+    showVcfFallback();
+  }
+  {
     $('vcfInput').addEventListener('change', (ev) => {
       const file = ev.target.files[0];
       if (!file) return;
@@ -2708,27 +2721,33 @@ function getFirebaseAuthInstance(){
   window.DulcesApp = { editClient, markPaid, deletePayment, editService, deleteService, editProduct, deleteProduct, showInvoice };
 
   // Instalación como app (PWA)
-  let deferredInstallPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    $('installBtn').style.display = 'flex';
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const installBtn = $('installBtn');
+  function refreshInstallBtn(){ installBtn.style.display = isStandalone() ? 'none' : 'flex'; }
+  refreshInstallBtn();
+  window.addEventListener('dmj-install-ready', refreshInstallBtn);
+  installBtn.addEventListener('click', async () => {
+    const ev = window.__dmjInstall;
+    if (ev){
+      ev.prompt();
+      try{ await ev.userChoice; }catch(_){}
+      window.__dmjInstall = null;
+      refreshInstallBtn();
+      return;
+    }
+    const ua = navigator.userAgent || '';
+    const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (ios){
+      alert('Para instalar en iPhone/iPad:\n\n1. Abre esta página en Safari.\n2. Toca el botón Compartir (cuadro con flecha hacia arriba).\n3. Elige "Agregar a pantalla de inicio".');
+    } else {
+      alert('Para instalar la app:\n\n1. Abre esta página en Chrome (no dentro de WhatsApp, Instagram u otra app).\n2. Toca el menú ⋮ (arriba a la derecha).\n3. Elige "Instalar app" o "Agregar a pantalla de inicio".\n\nSi no aparece, recarga la página una vez y vuelve a intentarlo.');
+    }
   });
-  $('installBtn').addEventListener('click', async () => {
-    if (!deferredInstallPrompt) return;
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-    deferredInstallPrompt = null;
-    $('installBtn').style.display = 'none';
-  });
-  window.addEventListener('appinstalled', () => {
-    $('installBtn').style.display = 'none';
-  });
+  window.addEventListener('appinstalled', () => { window.__dmjInstall = null; installBtn.style.display = 'none'; });
 
   if ('serviceWorker' in navigator){
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    });
+    const regSW = () => navigator.serviceWorker.register('./sw.js').catch((e) => console.warn('SW', e));
+    if (document.readyState === 'complete') regSW(); else window.addEventListener('load', regSW);
   }
 
   // Antes de esta versión, los datos se guardaban en el navegador con nombres genéricos
