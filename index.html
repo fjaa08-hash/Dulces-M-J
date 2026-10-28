@@ -478,6 +478,20 @@
     align-items:center;
     gap:5px;
   }
+
+  /* Barra deslizadora con forma de dulce */
+  html{scrollbar-width:none;}
+  html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0;}
+  .candy-bar{position:fixed; right:2px; width:26px; z-index:25; opacity:0; transition:opacity .35s; pointer-events:none; touch-action:none;}
+  .candy-bar.has{opacity:.55; pointer-events:auto;}
+  .candy-bar.active{opacity:1;}
+  .candy-bar.abs{position:absolute; right:0;}
+  .candy-bar .ct{position:absolute; left:50%; top:0; bottom:0; width:4px; margin-left:-2px; border-radius:4px;
+    background:linear-gradient(180deg,rgba(245,169,216,.45),rgba(198,133,69,.3)); }
+  .candy-bar .cth{position:absolute; left:0; width:26px; height:44px; cursor:grab; background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 44'%3E%3Cpath d='M12 15 L3 3 Q12 8 21 3 Z' fill='%23D9FDFB' stroke='%23C68545' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M12 29 L3 41 Q12 36 21 41 Z' fill='%23D9FDFB' stroke='%23C68545' stroke-width='1' stroke-linejoin='round'/%3E%3Cellipse cx='12' cy='22' rx='9.5' ry='9.5' fill='%23F58CC4' stroke='%23D4508F' stroke-width='1.2'/%3E%3Cpath d='M5.5 17 Q12 20 18.5 17' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M5.5 23 Q12 26 18.5 23' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='.9'/%3E%3Ccircle cx='9' cy='27' r='1' fill='%237A4A35'/%3E%3Ccircle cx='15' cy='20' r='1' fill='%237A4A35'/%3E%3C/svg%3E"); filter:drop-shadow(0 1px 2px rgba(122,74,53,.35));}
+  .candy-bar .cth:active{cursor:grabbing;}
+  #productScrollThumb{background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 44'%3E%3Cpath d='M12 15 L3 3 Q12 8 21 3 Z' fill='%23D9FDFB' stroke='%23C68545' stroke-width='1' stroke-linejoin='round'/%3E%3Cpath d='M12 29 L3 41 Q12 36 21 41 Z' fill='%23D9FDFB' stroke='%23C68545' stroke-width='1' stroke-linejoin='round'/%3E%3Cellipse cx='12' cy='22' rx='9.5' ry='9.5' fill='%23F58CC4' stroke='%23D4508F' stroke-width='1.2'/%3E%3Cpath d='M5.5 17 Q12 20 18.5 17' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M5.5 23 Q12 26 18.5 23' stroke='%23fff' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='.9'/%3E%3Ccircle cx='9' cy='27' r='1' fill='%237A4A35'/%3E%3Ccircle cx='15' cy='20' r='1' fill='%237A4A35'/%3E%3C/svg%3E") !important; width:26px !important; left:-1px !important; border-radius:0 !important; box-shadow:none !important; filter:drop-shadow(0 1px 2px rgba(122,74,53,.35));}
+  #productScrollTrack>div:first-child{background:linear-gradient(180deg,rgba(245,169,216,.45),rgba(198,133,69,.3)) !important; left:10px !important;}
   .sprinkles{position:absolute; inset:0; pointer-events:none; z-index:0;}
   .sprinkles span{position:absolute; width:22px; height:7px; border-radius:4px; opacity:.85;}
   .catbar{display:flex; gap:8px; overflow-x:auto; margin:0 0 12px; padding-bottom:2px; scrollbar-width:none; -webkit-overflow-scrolling:touch;}
@@ -2135,7 +2149,7 @@ function getFirebaseAuthInstance(){
     track.style.display = canScroll ? 'block' : 'none';
     if (!canScroll) return;
     const trackH = track.clientHeight;   // se mide ya visible (oculta mide 0)
-    const thumbH = Math.max(48, (list.clientHeight / list.scrollHeight) * trackH);   // mínimo 48 px para que el dedo lo agarre
+    const thumbH = 44;   // dulce de tamaño fijo   // mínimo 48 px para que el dedo lo agarre
     const maxThumbTop = trackH - thumbH;
     const maxScroll = list.scrollHeight - list.clientHeight;
     const ratio = maxScroll > 0 ? (list.scrollTop / maxScroll) : 0;
@@ -2777,8 +2791,11 @@ function getFirebaseAuthInstance(){
       return;
     }
     const ua = navigator.userAgent || '';
+    const isBrave = !!(navigator.brave && navigator.brave.isBrave);
     const ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (ios){
+    if (isBrave){
+      alert('Brave en Android no permite instalar apps (solo crea un acceso directo que abre dentro de Brave).\n\nPara instalarla como app de verdad:\n\n1. Abre este mismo enlace en Google Chrome.\n2. Toca el menú ⋮ → "Instalar app".\n\nO en Brave: menú ⋮ → "Agregar a pantalla de inicio" para un acceso directo.');
+    } else if (ios){
       alert('Para instalar en iPhone/iPad:\n\n1. Abre esta página en Safari.\n2. Toca el botón Compartir (cuadro con flecha hacia arriba).\n3. Elige "Agregar a pantalla de inicio".');
     } else {
       alert('Para instalar la app:\n\n1. Abre esta página en Chrome (no dentro de WhatsApp, Instagram u otra app).\n2. Toca el menú ⋮ (arriba a la derecha).\n3. Elige "Instalar app" o "Agregar a pantalla de inicio".\n\nSi no aparece, recarga la página una vez y vuelve a intentarlo.');
@@ -2863,6 +2880,48 @@ function getFirebaseAuthInstance(){
       startApp();
     }
   })();
+})();
+</script>
+<script>
+(function(){
+  function candy(getEl, host, abs){
+    var bar=document.createElement('div'); bar.className='candy-bar'+(abs?' abs':'');
+    bar.innerHTML='<div class="ct"></div><div class="cth"></div>';
+    host.appendChild(bar);
+    var th=bar.querySelector('.cth'), idle=null;
+    var TH=44;
+    function m(){var e=getEl(); return {st:e.scrollTop, sh:e.scrollHeight, ch:(e===document.scrollingElement?window.innerHeight:e.clientHeight)};}
+    function layout(){
+      var s=m(), over=s.sh-s.ch>4;
+      if(!abs){bar.style.top='10px'; bar.style.height=(window.innerHeight-20)+'px';}
+      else{bar.style.top='0'; bar.style.height=s.ch+'px';}
+      bar.classList.toggle('has',over);
+      if(!over) return;
+      var tr=bar.clientHeight-TH, f=s.st/(s.sh-s.ch);
+      th.style.top=Math.max(0,Math.min(tr,f*tr))+'px';
+    }
+    function wake(){bar.classList.add('active'); clearTimeout(idle); idle=setTimeout(function(){bar.classList.remove('active');},1100);}
+    function onScroll(){layout(); wake();}
+    (abs?getEl():window).addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',layout);
+    if(window.ResizeObserver){var ro=new ResizeObserver(layout); ro.observe(document.body); if(abs) ro.observe(getEl());}
+    var drag=null;
+    function setFromY(clientY,off){
+      var r=bar.getBoundingClientRect(), s=m(), tr=bar.clientHeight-TH;
+      var f=Math.max(0,Math.min(1,(clientY-r.top-off)/tr));
+      getEl().scrollTop=f*(s.sh-s.ch);
+    }
+    th.addEventListener('pointerdown',function(e){drag=e.clientY-th.getBoundingClientRect().top; th.setPointerCapture(e.pointerId); bar.classList.add('active'); e.preventDefault();});
+    th.addEventListener('pointermove',function(e){if(drag!==null) setFromY(e.clientY,drag);});
+    th.addEventListener('pointerup',function(){drag=null; wake();});
+    th.addEventListener('pointercancel',function(){drag=null;});
+    bar.addEventListener('pointerdown',function(e){if(e.target===th) return; setFromY(e.clientY,TH/2); wake();});
+    setInterval(layout,800); layout();
+  }
+  function init(){
+    candy(function(){return document.scrollingElement||document.documentElement;}, document.body, false);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
 </body>
