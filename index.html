@@ -766,14 +766,14 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();win
 
 <script type="module">
 // Firebase se carga solo si la sincronización está activada (así la app abre sin internet).
-let initializeApp, getFirestore, doc, collection, writeBatch, getDocs, getDoc;
+let initializeApp, getFirestore, doc, collection, writeBatch, getDocs, getDoc, onSnapshot;
 let getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence;
 async function loadFirebaseLibs(){
   if (initializeApp) return;
   const V = 'https://www.gstatic.com/firebasejs/12.17.1/';
   const [a, f, au] = await Promise.all([import(V + 'firebase-app.js'), import(V + 'firebase-firestore.js'), import(V + 'firebase-auth.js')]);
   ({ initializeApp } = a);
-  ({ getFirestore, doc, collection, writeBatch, getDocs, getDoc } = f);
+  ({ getFirestore, doc, collection, writeBatch, getDocs, getDoc, onSnapshot } = f);
   ({ getAuth, signInAnonymously, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } = au);
 }
 
@@ -955,6 +955,17 @@ function getFirebaseAuthInstance(){
     return (h >>> 0).toString(36) + ':' + str.length;
   }
 
+  // Hash estable (no depende del orden de las claves, que Firestore puede cambiar)
+  function canon(v){
+    if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+    if (v && typeof v === 'object'){
+      return '{' + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ':' + canon(v[k])).join(',') + '}';
+    }
+    const s = JSON.stringify(v);
+    return s === undefined ? 'null' : s;
+  }
+  function itemHash(it){ return hashStr(canon(it)); }
+
   function computeSyncDiff(arrays, state){
     const sets = [], deletes = [];
     for (const col of SYNC_COLLECTIONS){
@@ -966,7 +977,7 @@ function getFirebaseAuthInstance(){
         const id = String(it.id);
         seen.add(id);
         const json = JSON.stringify(it);
-        const h = hashStr(json);
+        const h = itemHash(it);
         if (known[id] !== h) sets.push({ col, id, json, hash: h });
       }
       for (const id of Object.keys(known)){
@@ -1153,6 +1164,64 @@ function getFirebaseAuthInstance(){
     showToast('Subiendo todo a la nube...');
   }
 
+  // ---------- Recepción en tiempo real: cambios hechos desde otras cuentas ----------
+  let realtimeUnsubs = [];
+  function getCol(col){ return col === 'clients' ? clients : col === 'payments' ? payments : col === 'services' ? services : products; }
+  function setCol(col, arr){
+    if (col === 'clients') clients = arr; else if (col === 'payments') payments = arr;
+    else if (col === 'services') services = arr; else products = arr;
+  }
+  async function handleRemote(col, snap, isFirst){
+    let arr = getCol(col).slice();
+    let changed = false;
+    const known = syncState[col] || (syncState[col] = {});
+    const idxOf = (id) => arr.findIndex(x => x && String(x.id) === id);
+    snap.docChanges().forEach(ch => {
+      const d = ch.doc;
+      if (d.metadata && d.metadata.hasPendingWrites) return;   // eco de lo que acabamos de escribir
+      let id; try{ id = decodeURIComponent(d.id); }catch(e){ id = d.id; }
+      const i = idxOf(id);
+      if (ch.type === 'removed'){
+        if (i >= 0 && itemHash(arr[i]) === known[id]){ arr.splice(i, 1); changed = true; }
+        if (i < 0 || itemHash(arr[i] || {}) !== known[id]) delete known[id];
+        return;
+      }
+      const r = d.data();
+      if (!r || r.id === undefined) return;
+      const rh = itemHash(r);
+      const lh = i >= 0 ? itemHash(arr[i]) : null;
+      if (lh === rh){ known[id] = rh; return; }
+      if (i >= 0 && lh !== known[id]) return;                 // cambio local pendiente: se sube luego
+      if (i >= 0) arr[i] = r; else arr.push(r);
+      known[id] = rh; changed = true;
+    });
+    if (isFirst && !(snap.metadata && snap.metadata.fromCache)){
+      // eliminaciones hechas en otra cuenta mientras esta estaba cerrada
+      const remoteIds = new Set(snap.docs.map(d => { try{ return decodeURIComponent(d.id); }catch(e){ return d.id; } }));
+      for (const id of Object.keys(known)){
+        if (remoteIds.has(id)) continue;
+        const i = idxOf(id);
+        if (i >= 0 && itemHash(arr[i]) === known[id]){ arr.splice(i, 1); changed = true; }
+        if (i < 0 || itemHash(arr[i]) === known[id]) delete known[id];
+      }
+    }
+    if (!changed) { await saveSyncState(); return; }
+    setCol(col, arr);
+    try{ await window.storage.set(col, JSON.stringify(arr), false); }catch(e){ console.error(e); }
+    await saveSyncState();
+    render();
+  }
+  function startRealtime(){
+    if (!cloudDb || realtimeUnsubs.length || !onSnapshot) return;
+    for (const col of SYNC_COLLECTIONS){
+      let first = true;
+      const unsub = onSnapshot(collection(cloudDb, ...SALON_DOC, col),
+        (snap) => { const f = first; first = false; handleRemote(col, snap, f).catch(e => console.error('Sync entrante', e)); },
+        (err) => { console.error('Escucha de la nube', err); syncLastError = (err && (err.code || err.message)) || 'error'; updateSyncBadge('error'); });
+      realtimeUnsubs.push(unsub);
+    }
+  }
+
   async function initCloudSync(){
     if (!SYNC_ENABLED){ updateSyncBadge('off'); return; }
     updateSyncBadge('connecting');
@@ -1173,6 +1242,7 @@ function getFirebaseAuthInstance(){
           showToast('Datos recuperados desde la nube');
         }
       }
+      startRealtime();
       scheduleSync(500);
       window.addEventListener('online', () => scheduleSync(500));
       setInterval(() => scheduleSync(0), 120000);
@@ -2791,7 +2861,7 @@ function getFirebaseAuthInstance(){
   $('downloadExcelBtn').addEventListener('click', downloadExcelLedger);
   $('restoreFileInput').addEventListener('change', (e) => restoreBackup(e.target.files[0]));
 
-  window.DulcesApp = { editClient, markPaid, addAbono, deletePayment, editService, deleteService, editProduct, deleteProduct, showInvoice };
+  window.DulcesApp = { _handleRemote: handleRemote, _state: () => ({clients, payments, products, syncState}), editClient, markPaid, addAbono, deletePayment, editService, deleteService, editProduct, deleteProduct, showInvoice };
 
   // Instalación como app (PWA)
   const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
