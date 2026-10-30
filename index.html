@@ -610,6 +610,11 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();win
       <input id="payServiceDate" type="datetime-local">
     </div>
     <div class="field">
+      <label>Fecha de entrega del pedido</label>
+      <input id="payDeliveryDate" type="date">
+      <div class="helper">Opcional. Aparece en la factura.</div>
+    </div>
+    <div class="field">
       <label>Recordarme cobrar el ______</label>
       <input id="payReminderDate" type="date">
       <div class="helper">Si no queda nada pendiente, este campo no hace falta.</div>
@@ -1700,8 +1705,16 @@ function getFirebaseAuthInstance(){
     };
     y += 60;
     row('Fecha de la venta', formatDateTime(payment.serviceDate), owing ? ROSE : INK, true);
+    if (payment.deliveryDate){
+      y += 42;
+      row('Fecha de entrega', formatDate(payment.deliveryDate), BROWN, true);
+    }
     y += 42;
     row('Cliente', client.name, INK, true);
+    if (owing && payment.reminderDate){
+      y += 42;
+      row('Fecha de cobro', formatDate(payment.reminderDate), INK, true);
+    }
     y += 42;
     row('Factura emitida el', formatDateTime(new Date().toISOString()), INK, false);
 
@@ -1889,7 +1902,9 @@ function getFirebaseAuthInstance(){
     let msg = `*${SALON_NAME}*\n` + (SALON_ADDRESS ? `_${SALON_ADDRESS}_\n` : '') + `\n`;
     msg += `🧾 *Factura*\n`;
     msg += `Fecha de la venta: ${formatDateTime(payment.serviceDate)}\n`;
+    if (payment.deliveryDate) msg += `Fecha de entrega: ${formatDate(payment.deliveryDate)}\n`;
     msg += `Cliente: ${client.name}\n`;
+    if (owing && payment.reminderDate) msg += `Fecha de cobro: ${formatDate(payment.reminderDate)}\n`;
     msg += `Factura emitida el: ${formatDateTime(new Date().toISOString())}\n\n`;
     items.forEach(item => {
       msg += `${itemLabel(item)}: ${fmtMoney(item.price * (item.qty||1))}\n`;
@@ -2225,6 +2240,7 @@ function getFirebaseAuthInstance(){
               <div class="ledger-date">${formatDateTime(p.serviceDate)}</div>
               <div class="ledger-name">${client.name}</div>
               <div class="ledger-service">${paymentServiceSummary(p)}</div>
+              ${p.deliveryDate ? `<div class="ledger-service">🎁 Entrega: ${formatDate(p.deliveryDate)}</div>` : ''}
             </div>
             <div class="ledger-right">
               <div class="ledger-total">${fmtMoney(p.total)}</div>
@@ -2381,6 +2397,7 @@ function getFirebaseAuthInstance(){
     const advance = Math.min(parseFloat($('payAdvance').value) || 0, total);
     const serviceDate = $('payServiceDate').value;
     const reminderDate = $('payReminderDate').value;
+    const deliveryDate = $('payDeliveryDate').value;
 
     if (!clientId){ showToast('Selecciona un cliente'); return; }
     if (items.length === 0){ showToast('Agrega al menos un producto o encargo con su precio'); return; }
@@ -2388,7 +2405,7 @@ function getFirebaseAuthInstance(){
     const remaining = Math.max(total - advance, 0);
     payments.push({
       id: 'p_' + Date.now(),
-      clientId, items, total, advance, remaining,
+      clientId, items, total, advance, remaining, deliveryDate,
       abonos: advance > 0 ? [{amount: advance, date: new Date().toISOString().slice(0,10)}] : [],
       serviceDate: serviceDate || new Date().toISOString().slice(0,16),
       reminderDate: remaining > 0 ? reminderDate : '',
@@ -2400,6 +2417,7 @@ function getFirebaseAuthInstance(){
     addItemRow();
     $('payAdvance').value = '';
     $('payReminderDate').value = '';
+    $('payDeliveryDate').value = '';
     updateItemsTotal();
 
     render();
