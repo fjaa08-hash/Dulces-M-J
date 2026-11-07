@@ -585,6 +585,11 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();win
 
     <div style="height:16px"></div>
 
+    <div id="openInvBox" class="remaining-box" style="display:none; flex-direction:column; align-items:stretch; gap:6px; background:var(--mint,#D9FDFB);">
+      <div style="font-weight:700;">📂 Este cliente tiene una factura abierta</div>
+      <div id="openInvInfo" style="font-size:13px;"></div>
+      <label style="display:flex; gap:8px; align-items:center; font-size:14px; font-weight:600;"><input type="checkbox" id="payAddToOpen" checked style="width:auto;"> Agregar estos encargos a esa factura</label>
+    </div>
     <div class="field">
       <label>Productos o encargos</label>
       <div id="itemsContainer"></div>
@@ -604,6 +609,10 @@ window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();win
     <div class="remaining-box">
       <span>Resta por pagar</span>
       <b id="remainingPreview">$0</b>
+    </div>
+    <div class="field" id="keepOpenField">
+      <label style="display:flex; gap:8px; align-items:center; font-weight:600;"><input type="checkbox" id="payKeepOpen" style="width:auto;"> 📂 Dejar la factura abierta</label>
+      <div class="helper">Útil si el cliente puede agregar más encargos. Al final queda una sola factura global; la cierras desde Registro.</div>
     </div>
     <div class="field">
       <label>Fecha de la venta</label>
@@ -1775,6 +1784,10 @@ function getFirebaseAuthInstance(){
     };
     y += 60;
     row('Fecha de la venta', formatDateTime(payment.serviceDate), owing ? ROSE : INK, true);
+    if (payment.open){
+      y += 42;
+      row('Estado', 'Factura abierta', BROWN, true);
+    }
     if (payment.deliveryDate){
       y += 42;
       row('Fecha de entrega', formatDate(payment.deliveryDate), BROWN, true);
@@ -1972,6 +1985,7 @@ function getFirebaseAuthInstance(){
     let msg = `*${SALON_NAME}*\n` + (SALON_ADDRESS ? `_${SALON_ADDRESS}_\n` : '') + `\n`;
     msg += `🧾 *Factura*\n`;
     msg += `Fecha de la venta: ${formatDateTime(payment.serviceDate)}\n`;
+    if (payment.open) msg += `Estado: Factura abierta (se pueden agregar más pedidos)\n`;
     if (payment.deliveryDate) msg += `Fecha de entrega: ${formatDate(payment.deliveryDate)}\n`;
     msg += `Cliente: ${client.name}\n`;
     if (owing && payment.reminderDate) msg += `Fecha de cobro: ${formatDate(payment.reminderDate)}\n`;
@@ -2311,6 +2325,7 @@ function getFirebaseAuthInstance(){
               <div class="ledger-name">${client.name}</div>
               <div class="ledger-service">${paymentServiceSummary(p)}</div>
               ${p.deliveryDate ? `<div class="ledger-service">🎁 Entrega: ${formatDate(p.deliveryDate)}</div>` : ''}
+              ${p.open ? `<div class="ledger-service" style="color:var(--brown);font-weight:700;">📂 Factura abierta · <a href="#" onclick="DulcesApp.addToOpen('${p.id}');return false;">+ agregar pedido</a> · <a href="#" onclick="DulcesApp.closeInvoice('${p.id}');return false;">Cerrar factura</a></div>` : ''}
             </div>
             <div class="ledger-right">
               <div class="ledger-total">${fmtMoney(p.total)}</div>
@@ -2412,6 +2427,7 @@ function getFirebaseAuthInstance(){
     renderStats();
     renderClients();
     renderPaySelect();
+    refreshOpenInvBox();
     renderServices();
     renderProducts();
     renderLedger();
@@ -2460,6 +2476,17 @@ function getFirebaseAuthInstance(){
     showToast('Cliente guardado');
   }
 
+  function openInvoiceOf(clientId){
+    return payments.filter(p => p.clientId === clientId && p.open).sort((a,b) => String(b.serviceDate).localeCompare(String(a.serviceDate)))[0] || null;
+  }
+  function refreshOpenInvBox(){
+    const cid = $('payClientSelect').value;
+    const op = cid ? openInvoiceOf(cid) : null;
+    $('openInvBox').style.display = op ? 'flex' : 'none';
+    $('keepOpenField').style.display = (op && $('payAddToOpen').checked) ? 'none' : 'block';
+    if (op) $('openInvInfo').textContent = 'Total actual ' + fmtMoney(op.total) + ' · Resta ' + fmtMoney(op.remaining) + ' · ' + paymentItems(op).length + ' línea(s)';
+  }
+
   async function savePayment(){
     const clientId = $('payClientSelect').value;
     const items = collectItems();
@@ -2472,8 +2499,31 @@ function getFirebaseAuthInstance(){
     if (!clientId){ showToast('Selecciona un cliente'); return; }
     if (items.length === 0){ showToast('Agrega al menos un producto o encargo con su precio'); return; }
 
+    const op = openInvoiceOf(clientId);
+    if (op && $('payAddToOpen').checked){
+      const today = new Date().toISOString().slice(0,10);
+      const newItems = items.map(i => Object.assign({}, i, { addedAt: today }));
+      op.items = paymentItems(op).concat(newItems);
+      op.total = (Number(op.total) || 0) + total;
+      const list = paymentAbonos(op).filter(a => !a.saldo);
+      if (advance > 0) list.push({ amount: advance, date: today });
+      op.abonos = list;
+      op.advance = Math.min(list.reduce((s,a)=>s+a.amount,0), op.total);
+      op.remaining = Math.max(op.total - op.advance, 0);
+      if (deliveryDate) op.deliveryDate = deliveryDate;
+      op.reminderDate = op.remaining > 0 ? (reminderDate || op.reminderDate || '') : '';
+      await savePayments();
+      await applyStockChanges(items, -1);
+      $('itemsContainer').innerHTML = '';
+      addItemRow();
+      $('payAdvance').value = ''; $('payReminderDate').value = ''; $('payDeliveryDate').value = '';
+      updateItemsTotal(); render(); refreshOpenInvBox();
+      showToast('Agregado a la factura abierta. Total ' + fmtMoney(op.total));
+      return;
+    }
     const remaining = Math.max(total - advance, 0);
     payments.push({
+      open: $('payKeepOpen').checked,
       id: 'p_' + Date.now(),
       clientId, items, total, advance, remaining, deliveryDate,
       abonos: advance > 0 ? [{amount: advance, date: new Date().toISOString().slice(0,10)}] : [],
@@ -2488,9 +2538,11 @@ function getFirebaseAuthInstance(){
     $('payAdvance').value = '';
     $('payReminderDate').value = '';
     $('payDeliveryDate').value = '';
+    $('payKeepOpen').checked = false;
     updateItemsTotal();
 
     render();
+    refreshOpenInvBox();
     showToast('Venta registrada');
   }
 
@@ -2527,6 +2579,27 @@ function getFirebaseAuthInstance(){
     await registerAbono(p, Math.round(applied * 100) / 100);
     render();
     showToast(p.remaining > 0 ? 'Abono registrado. Resta ' + fmtMoney(p.remaining) : 'Abono registrado. ¡Pagado completo!');
+    showInvoice(paymentId);
+  }
+
+  function addToOpen(paymentId){
+    const p = payments.find(p => p.id === paymentId);
+    if (!p) return;
+    switchTab('pago');
+    $('payClientSelect').value = p.clientId;
+    $('payAddToOpen').checked = true;
+    refreshOpenInvBox();
+    window.scrollTo(0, 0);
+    showToast('Agrega los nuevos encargos y toca Guardar');
+  }
+  async function closeInvoice(paymentId){
+    const p = payments.find(p => p.id === paymentId);
+    if (!p) return;
+    if (!confirm('¿Cerrar esta factura? Ya no se podrán agregar más pedidos y quedará como factura global final.')) return;
+    p.open = false;
+    await savePayments();
+    render();
+    showToast('Factura cerrada');
     showInvoice(paymentId);
   }
 
@@ -2830,6 +2903,8 @@ function getFirebaseAuthInstance(){
   $('savePayBtn').addEventListener('click', savePayment);
   $('searchClients').addEventListener('input', renderClients);
   $('payAdvance').addEventListener('input', updateRemainingPreview);
+  $('payClientSelect').addEventListener('change', refreshOpenInvBox);
+  $('payAddToOpen').addEventListener('change', refreshOpenInvBox);
   $('addServiceBtn').addEventListener('click', addService);
   $('addItemBtn').addEventListener('click', () => addItemRow());
   $('addProductBtn').addEventListener('click', addProduct);
@@ -2861,7 +2936,7 @@ function getFirebaseAuthInstance(){
   $('downloadExcelBtn').addEventListener('click', downloadExcelLedger);
   $('restoreFileInput').addEventListener('change', (e) => restoreBackup(e.target.files[0]));
 
-  window.DulcesApp = { _handleRemote: handleRemote, _state: () => ({clients, payments, products, syncState}), editClient, markPaid, addAbono, deletePayment, editService, deleteService, editProduct, deleteProduct, showInvoice };
+  window.DulcesApp = { addToOpen, closeInvoice, _handleRemote: handleRemote, _state: () => ({clients, payments, products, syncState}), editClient, markPaid, addAbono, deletePayment, editService, deleteService, editProduct, deleteProduct, showInvoice };
 
   // Instalación como app (PWA)
   const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
